@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as QuotationsRouteImport } from './routes/quotations'
+import { Route as DocDocIdRouteImport } from './routes/doc.$docId'
+import { Route as DocEditDocIdRouteImport } from './routes/doc.edit.$docId'
+import { Route as DocNewKindRouteImport } from './routes/doc.new.$kind'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotationsRoute = QuotationsRouteImport.update({
+  id: '/quotations',
+  path: '/quotations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocDocIdRoute = DocDocIdRouteImport.update({
+  id: '/doc/$docId',
+  path: '/doc/$docId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocEditDocIdRoute = DocEditDocIdRouteImport.update({
+  id: '/doc/edit/$docId',
+  path: '/doc/edit/$docId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocNewKindRoute = DocNewKindRouteImport.update({
+  id: '/doc/new/$kind',
+  path: '/doc/new/$kind',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/invoices': typeof InvoicesRoute
+  '/quotations': typeof QuotationsRoute
+  '/doc/$docId': typeof DocDocIdRoute
+  '/doc/edit/$docId': typeof DocEditDocIdRoute
+  '/doc/new/$kind': typeof DocNewKindRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/invoices': typeof InvoicesRoute
+  '/quotations': typeof QuotationsRoute
+  '/doc/$docId': typeof DocDocIdRoute
+  '/doc/edit/$docId': typeof DocEditDocIdRoute
+  '/doc/new/$kind': typeof DocNewKindRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/invoices': typeof InvoicesRoute
+  '/quotations': typeof QuotationsRoute
+  '/doc/$docId': typeof DocDocIdRoute
+  '/doc/edit/$docId': typeof DocEditDocIdRoute
+  '/doc/new/$kind': typeof DocNewKindRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/invoices'
+    | '/quotations'
+    | '/doc/$docId'
+    | '/doc/edit/$docId'
+    | '/doc/new/$kind'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/invoices'
+    | '/quotations'
+    | '/doc/$docId'
+    | '/doc/edit/$docId'
+    | '/doc/new/$kind'
+  id:
+    | '__root__'
+    | '/'
+    | '/invoices'
+    | '/quotations'
+    | '/doc/$docId'
+    | '/doc/edit/$docId'
+    | '/doc/new/$kind'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InvoicesRoute: typeof InvoicesRoute
+  QuotationsRoute: typeof QuotationsRoute
+  DocDocIdRoute: typeof DocDocIdRoute
+  DocEditDocIdRoute: typeof DocEditDocIdRoute
+  DocNewKindRoute: typeof DocNewKindRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotations': {
+      id: '/quotations'
+      path: '/quotations'
+      fullPath: '/quotations'
+      preLoaderRoute: typeof QuotationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doc/$docId': {
+      id: '/doc/$docId'
+      path: '/doc/$docId'
+      fullPath: '/doc/$docId'
+      preLoaderRoute: typeof DocDocIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doc/edit/$docId': {
+      id: '/doc/edit/$docId'
+      path: '/doc/edit/$docId'
+      fullPath: '/doc/edit/$docId'
+      preLoaderRoute: typeof DocEditDocIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doc/new/$kind': {
+      id: '/doc/new/$kind'
+      path: '/doc/new/$kind'
+      fullPath: '/doc/new/$kind'
+      preLoaderRoute: typeof DocNewKindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InvoicesRoute: InvoicesRoute,
+  QuotationsRoute: QuotationsRoute,
+  DocDocIdRoute: DocDocIdRoute,
+  DocEditDocIdRoute: DocEditDocIdRoute,
+  DocNewKindRoute: DocNewKindRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
