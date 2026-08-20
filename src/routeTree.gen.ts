@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as PartiesRouteImport } from './routes/parties'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as ProductsRouteImport } from './routes/products'
 import { Route as QuotationsRouteImport } from './routes/quotations'
 import { Route as DocDocIdRouteImport } from './routes/doc.$docId'
 import { Route as DocEditDocIdRouteImport } from './routes/doc.edit.$docId'
@@ -24,6 +27,21 @@ const IndexRoute = IndexRouteImport.update({
 const InvoicesRoute = InvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartiesRoute = PartiesRouteImport.update({
+  id: '/parties',
+  path: '/parties',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotationsRoute = QuotationsRouteImport.update({
@@ -50,6 +68,9 @@ const DocNewKindRoute = DocNewKindRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/invoices': typeof InvoicesRoute
+  '/parties': typeof PartiesRoute
+  '/payments': typeof PaymentsRoute
+  '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
@@ -58,6 +79,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/invoices': typeof InvoicesRoute
+  '/parties': typeof PartiesRoute
+  '/payments': typeof PaymentsRoute
+  '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
@@ -67,6 +91,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/invoices': typeof InvoicesRoute
+  '/parties': typeof PartiesRoute
+  '/payments': typeof PaymentsRoute
+  '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
@@ -77,6 +104,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/invoices'
+    | '/parties'
+    | '/payments'
+    | '/products'
     | '/quotations'
     | '/doc/$docId'
     | '/doc/edit/$docId'
@@ -85,6 +115,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/invoices'
+    | '/parties'
+    | '/payments'
+    | '/products'
     | '/quotations'
     | '/doc/$docId'
     | '/doc/edit/$docId'
@@ -93,6 +126,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/invoices'
+    | '/parties'
+    | '/payments'
+    | '/products'
     | '/quotations'
     | '/doc/$docId'
     | '/doc/edit/$docId'
@@ -102,6 +138,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InvoicesRoute: typeof InvoicesRoute
+  PartiesRoute: typeof PartiesRoute
+  PaymentsRoute: typeof PaymentsRoute
+  ProductsRoute: typeof ProductsRoute
   QuotationsRoute: typeof QuotationsRoute
   DocDocIdRoute: typeof DocDocIdRoute
   DocEditDocIdRoute: typeof DocEditDocIdRoute
@@ -122,6 +161,27 @@ declare module '@tanstack/react-router' {
       path: '/invoices'
       fullPath: '/invoices'
       preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parties': {
+      id: '/parties'
+      path: '/parties'
+      fullPath: '/parties'
+      preLoaderRoute: typeof PartiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quotations': {
@@ -158,6 +218,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InvoicesRoute: InvoicesRoute,
+  PartiesRoute: PartiesRoute,
+  PaymentsRoute: PaymentsRoute,
+  ProductsRoute: ProductsRoute,
   QuotationsRoute: QuotationsRoute,
   DocDocIdRoute: DocDocIdRoute,
   DocEditDocIdRoute: DocEditDocIdRoute,
