@@ -55,10 +55,18 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
     .filter((s) => s.need > s.available);
 
   const submit = () => {
-    if (!partyId) return toast.error("Select a party first");
-    if (!items.length) return toast.error("Add at least one line item");
-    if (kind === "INVOICE" && shortages.length && !allowNegative)
-      return toast.error("Insufficient stock — enable override to proceed");
+    if (!partyId) {
+      toast.error("Select a party first");
+      return;
+    }
+    if (!items.length) {
+      toast.error("Add at least one line item");
+      return;
+    }
+    if (kind === "INVOICE" && shortages.length && !allowNegative) {
+      toast.error("Insufficient stock — enable override to proceed");
+      return;
+    }
 
     const doc: Doc = {
       id: existing?.id ?? uid("dc"),
