@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FollowupsRouteImport } from './routes/followups'
 import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as QuotationsRouteImport } from './routes/quotations'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DocDocIdRouteImport } from './routes/doc.$docId'
 import { Route as DocEditDocIdRouteImport } from './routes/doc.edit.$docId'
 import { Route as DocNewKindRouteImport } from './routes/doc.new.$kind'
@@ -24,9 +27,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FollowupsRoute = FollowupsRouteImport.update({
+  id: '/followups',
+  path: '/followups',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvoicesRoute = InvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartiesRoute = PartiesRouteImport.update({
@@ -49,6 +62,11 @@ const QuotationsRoute = QuotationsRouteImport.update({
   path: '/quotations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocDocIdRoute = DocDocIdRouteImport.update({
   id: '/doc/$docId',
   path: '/doc/$docId',
@@ -67,22 +85,28 @@ const DocNewKindRoute = DocNewKindRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/followups': typeof FollowupsRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/parties': typeof PartiesRoute
   '/payments': typeof PaymentsRoute
   '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
+  '/settings': typeof SettingsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
   '/doc/new/$kind': typeof DocNewKindRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/followups': typeof FollowupsRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/parties': typeof PartiesRoute
   '/payments': typeof PaymentsRoute
   '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
+  '/settings': typeof SettingsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
   '/doc/new/$kind': typeof DocNewKindRoute
@@ -90,11 +114,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/followups': typeof FollowupsRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/parties': typeof PartiesRoute
   '/payments': typeof PaymentsRoute
   '/products': typeof ProductsRoute
   '/quotations': typeof QuotationsRoute
+  '/settings': typeof SettingsRoute
   '/doc/$docId': typeof DocDocIdRoute
   '/doc/edit/$docId': typeof DocEditDocIdRoute
   '/doc/new/$kind': typeof DocNewKindRoute
@@ -103,33 +130,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/followups'
     | '/invoices'
+    | '/ledger'
     | '/parties'
     | '/payments'
     | '/products'
     | '/quotations'
+    | '/settings'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/followups'
     | '/invoices'
+    | '/ledger'
     | '/parties'
     | '/payments'
     | '/products'
     | '/quotations'
+    | '/settings'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
   id:
     | '__root__'
     | '/'
+    | '/followups'
     | '/invoices'
+    | '/ledger'
     | '/parties'
     | '/payments'
     | '/products'
     | '/quotations'
+    | '/settings'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
@@ -137,11 +173,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FollowupsRoute: typeof FollowupsRoute
   InvoicesRoute: typeof InvoicesRoute
+  LedgerRoute: typeof LedgerRoute
   PartiesRoute: typeof PartiesRoute
   PaymentsRoute: typeof PaymentsRoute
   ProductsRoute: typeof ProductsRoute
   QuotationsRoute: typeof QuotationsRoute
+  SettingsRoute: typeof SettingsRoute
   DocDocIdRoute: typeof DocDocIdRoute
   DocEditDocIdRoute: typeof DocEditDocIdRoute
   DocNewKindRoute: typeof DocNewKindRoute
@@ -156,11 +195,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/followups': {
+      id: '/followups'
+      path: '/followups'
+      fullPath: '/followups'
+      preLoaderRoute: typeof FollowupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invoices': {
       id: '/invoices'
       path: '/invoices'
       fullPath: '/invoices'
       preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/parties': {
@@ -191,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuotationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/doc/$docId': {
       id: '/doc/$docId'
       path: '/doc/$docId'
@@ -217,11 +277,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FollowupsRoute: FollowupsRoute,
   InvoicesRoute: InvoicesRoute,
+  LedgerRoute: LedgerRoute,
   PartiesRoute: PartiesRoute,
   PaymentsRoute: PaymentsRoute,
   ProductsRoute: ProductsRoute,
   QuotationsRoute: QuotationsRoute,
+  SettingsRoute: SettingsRoute,
   DocDocIdRoute: DocDocIdRoute,
   DocEditDocIdRoute: DocEditDocIdRoute,
   DocNewKindRoute: DocNewKindRoute,
