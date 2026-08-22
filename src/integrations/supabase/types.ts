@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          company_id: string
+          created_at: string
+          entity: string
+          entity_id: string
+          id: string
+          summary: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          company_id: string
+          created_at?: string
+          entity: string
+          entity_id?: string
+          id?: string
+          summary?: string
+          user_email?: string
+          user_id?: string
+        }
+        Update: {
+          action?: string
+          company_id?: string
+          created_at?: string
+          entity?: string
+          entity_id?: string
+          id?: string
+          summary?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           account_no: string
