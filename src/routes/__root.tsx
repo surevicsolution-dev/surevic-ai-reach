@@ -1,140 +1,73 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  Link,
-  createRootRouteWithContext,
-  useRouter,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { createRootRoute, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
+import React, { useEffect } from 'react';
+import { supabase } from '../integrations/supabase/client';
 
-import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
-import { ErpProvider } from "@/lib/erp/store";
-import { Shell } from "@/components/erp/Shell";
-import { Toaster } from "@/components/ui/sonner";
-
-function NotFoundComponent() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
-  const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Surevic ERP + AI — GST Cloud ERP for Indian Industry" },
-      {
-        name: "description",
-        content:
-          "Multi-tenant cloud ERP with GST invoicing, inventory, ledgers and an embedded AI copilot for Indian automation and manufacturing businesses.",
-      },
-      { name: "author", content: "Surevic Automation" },
-      { property: "og:title", content: "Surevic ERP + AI" },
-      { property: "og:description", content: "GST invoicing, inventory, ledgers and an AI copilot in one workspace." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-  }),
-  shellComponent: RootShell,
+export const Route = createRootRoute({
   component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
 });
 
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
-
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+  const navigate = useNavigate();
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
+
+  useEffect(() => {
+    // Check if user is logged in
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const localAuth = localStorage.getItem('surevic_auth');
+
+      // Agar login nahi hai aur page /login nahi hai -> redirect to /login
+      if (!session && !localAuth && currentPath !== '/login') {
+        navigate({ to: '/login' });
+      }
+    };
+
+    checkAuth();
+
+    // Listen to Supabase auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session && currentPath !== '/login') {
+        localStorage.removeItem('surevic_auth');
+        navigate({ to: '/login' });
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [currentPath, navigate]);
+
+  // Login page par extra top navigation nahi dikhana
+  if (currentPath === '/login') {
+    return <Outlet />;
+  }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ErpProvider>
-        <Shell>
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </Shell>
-        <Toaster position="top-right" />
-      </ErpProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      {/* Top Header with Logout */}
+      <header className="h-14 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-900/50">
+        <div className="flex items-center gap-2 font-bold text-base tracking-wide text-purple-400">
+          <span>Surevic ERP</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={async () => {
+              await supabase.auth.signOut();
+              localStorage.removeItem('surevic_auth');
+              navigate({ to: '/login' });
+            }}
+            className="px-3 py-1.5 text-xs font-medium bg-red-950/40 border border-red-800/60 text-red-300 hover:bg-red-900/50 rounded-lg transition"
+          >
+            Logout
+          </button>
+        </div>
+      </header>
+
+      {/* Main ERP App */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
+    </div>
   );
 }
