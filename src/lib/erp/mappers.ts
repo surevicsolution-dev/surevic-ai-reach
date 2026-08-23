@@ -23,7 +23,7 @@ export const toCompany = (r: any): Company => ({
   terms: (r.terms ?? []) as string[],
 });
 
-export const fromCompany = (c: Partial<Company>) => {
+export const fromCompany = (c: Partial<Company>): any => {
   const o: Record<string, unknown> = {};
   if (c.name !== undefined) o["name"] = c.name;
   if (c.legalName !== undefined) o["legal_name"] = c.legalName;
@@ -62,7 +62,7 @@ export const toParty = (r: any): Party => ({
   openingBalance: Number(r.opening_balance ?? 0),
 });
 
-export const fromParty = (p: Party) => ({
+export const fromParty = (p: Party): any => ({
   id: p.id,
   company_id: p.companyId,
   name: p.name,
@@ -94,7 +94,7 @@ export const toProduct = (r: any): Product => ({
   minQty: Number(r.min_qty ?? 0),
 });
 
-export const fromProduct = (p: Product) => ({
+export const fromProduct = (p: Product): any => ({
   id: p.id,
   company_id: p.companyId,
   name: p.name,
@@ -125,7 +125,7 @@ export const toDoc = (r: any): Doc => ({
   convertedTo: r.converted_to ?? undefined,
 });
 
-export const fromDoc = (d: Doc) => ({
+export const fromDoc = (d: Doc): any => ({
   id: d.id,
   company_id: d.companyId,
   kind: d.kind,
@@ -154,7 +154,7 @@ export const toPayment = (r: any): Payment => ({
   note: r.note ?? undefined,
 });
 
-export const fromPayment = (p: Payment) => ({
+export const fromPayment = (p: Payment): any => ({
   id: p.id,
   company_id: p.companyId,
   date: p.date,

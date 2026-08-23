@@ -449,7 +449,7 @@ export function ErpProvider({ children }: { children: ReactNode }) {
     const productIds = new Map(seedProducts.map((p) => [p.id, uid()]));
     const docIds = new Map(seedDocs.map((d) => [d.id, uid()]));
 
-    await supabase.from("companies").update(fromCompany({ ...seedCompany, id: undefined as never })).eq("id", companyId);
+    await supabase.from("companies").update(fromCompany({ ...seedCompany, id: companyId })).eq("id", companyId);
     await supabase.from("parties").insert(
       seedParties.map((p) => fromParty({ ...p, id: partyIds.get(p.id)!, companyId })),
     );
@@ -474,7 +474,7 @@ export function ErpProvider({ children }: { children: ReactNode }) {
           id: uid(),
           companyId,
           partyId: partyIds.get(p.partyId)!,
-          invoiceId: p.invoiceId ? docIds.get(p.invoiceId) : undefined,
+          ...(p.invoiceId ? { invoiceId: docIds.get(p.invoiceId)! } : {}),
         }),
       ),
     );
