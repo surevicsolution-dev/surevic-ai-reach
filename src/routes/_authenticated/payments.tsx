@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { fmtDate, inr } from "@/lib/erp/gst";
 import type { Payment, PaymentMode } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/payments")({
+export const Route = createFileRoute("/_authenticated/payments")({
   head: () => ({
     meta: [
       { title: "Payments & Receipts — Surevic ERP + AI" },

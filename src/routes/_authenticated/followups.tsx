@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/erp/StatusBadge";
 import { daysOverdue, fmtDate, inr } from "@/lib/erp/gst";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/followups")({
+export const Route = createFileRoute("/_authenticated/followups")({
   head: () => ({
     meta: [
       { title: "Payment Follow-ups — Surevic ERP + AI" },

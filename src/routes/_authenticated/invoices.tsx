@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { fmtDate, inr, daysOverdue } from "@/lib/erp/gst";
 import type { Doc } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/invoices")({
+export const Route = createFileRoute("/_authenticated/invoices")({
   head: () => ({
     meta: [
       { title: "Tax Invoices — Surevic ERP + AI" },

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { inr } from "@/lib/erp/gst";
 import type { Product } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/products")({
+export const Route = createFileRoute("/_authenticated/products")({
   head: () => ({
     meta: [
       { title: "Inventory — Surevic ERP + AI" },

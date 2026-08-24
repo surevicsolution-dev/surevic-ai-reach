@@ -7,7 +7,7 @@ import { useErp } from "@/lib/erp/store";
 import { inr, fmtDate, daysOverdue, agingBucket } from "@/lib/erp/gst";
 import { StatusBadge } from "@/components/erp/StatusBadge";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Surevic ERP + AI" },

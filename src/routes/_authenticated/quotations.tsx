@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { fmtDate, inr } from "@/lib/erp/gst";
 import type { Doc } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/_authenticated/_authenticated/quotations")({
+export const Route = createFileRoute("/_authenticated/quotations")({
   head: () => ({
     meta: [
       { title: "Quotations — Surevic ERP + AI" },
