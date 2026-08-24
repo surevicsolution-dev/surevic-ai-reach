@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedFollowupsRouteImport } from './routes/_authenticated/followups'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
@@ -25,6 +26,11 @@ import { Route as AuthenticatedDocNewKindRouteImport } from './routes/_authentic
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
@@ -91,6 +97,7 @@ const AuthenticatedDocNewKindRoute = AuthenticatedDocNewKindRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
+  '/login': typeof LoginRoute
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
@@ -120,6 +128,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/_authenticated/followups': typeof AuthenticatedFollowupsRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/followups'
     | '/invoices'
     | '/ledger'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/doc/new/$kind'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
     | '/followups'
     | '/invoices'
     | '/ledger'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authenticated'
+    | '/login'
     | '/_authenticated/followups'
     | '/_authenticated/invoices'
     | '/_authenticated/ledger'
@@ -181,6 +193,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -190,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/': {
@@ -314,6 +334,7 @@ const AuthenticatedRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
