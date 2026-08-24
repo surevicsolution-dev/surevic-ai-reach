@@ -29,7 +29,8 @@ const PERMISSIONS: { role: Role; access: string }[] = [
 ];
 
 function Settings() {
-  const { state, updateCompany, reset } = useErp();
+  const { state, updateCompany, can, loadSampleData, wipeData } = useErp();
+  const [busy, setBusy] = useState<"seed" | "wipe" | null>(null);
   const c = state.company;
   const set = (k: keyof Company, v: string) => updateCompany({ [k]: v } as Partial<Company>);
 
