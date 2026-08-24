@@ -33,7 +33,7 @@ const blank = (companyId: string): Party => ({
 });
 
 function Parties() {
-  const { state, upsertParty, outstandingFor } = useErp();
+  const { state, upsertParty, outstandingFor, bulkUpsertParties, can } = useErp();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Party>(blank(state.company.id));
 
