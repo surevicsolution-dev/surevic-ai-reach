@@ -96,6 +96,7 @@ function Products() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </>
       }
       columns={[
         { key: "sku", header: "SKU", render: (p) => <span className="tabular text-xs font-medium">{p.sku}</span> },
