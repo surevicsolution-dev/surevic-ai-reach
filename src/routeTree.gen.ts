@@ -9,127 +9,164 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as FollowupsRouteImport } from './routes/followups'
-import { Route as InvoicesRouteImport } from './routes/invoices'
-import { Route as LedgerRouteImport } from './routes/ledger'
-import { Route as PartiesRouteImport } from './routes/parties'
-import { Route as PaymentsRouteImport } from './routes/payments'
-import { Route as ProductsRouteImport } from './routes/products'
-import { Route as QuotationsRouteImport } from './routes/quotations'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as DocDocIdRouteImport } from './routes/doc.$docId'
-import { Route as DocEditDocIdRouteImport } from './routes/doc.edit.$docId'
-import { Route as DocNewKindRouteImport } from './routes/doc.new.$kind'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedFollowupsRouteImport } from './routes/_authenticated/followups'
+import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
+import { Route as AuthenticatedLedgerRouteImport } from './routes/_authenticated/ledger'
+import { Route as AuthenticatedPartiesRouteImport } from './routes/_authenticated/parties'
+import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
+import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as AuthenticatedQuotationsRouteImport } from './routes/_authenticated/quotations'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedDocDocIdRouteImport } from './routes/_authenticated/doc.$docId'
+import { Route as AuthenticatedDocEditDocIdRouteImport } from './routes/_authenticated/doc.edit.$docId'
+import { Route as AuthenticatedDocNewKindRouteImport } from './routes/_authenticated/doc.new.$kind'
 
-const IndexRoute = IndexRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const FollowupsRoute = FollowupsRouteImport.update({
+const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFollowupsRoute = AuthenticatedFollowupsRouteImport.update({
   id: '/followups',
   path: '/followups',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const InvoicesRoute = InvoicesRouteImport.update({
+const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const LedgerRoute = LedgerRouteImport.update({
+const AuthenticatedLedgerRoute = AuthenticatedLedgerRouteImport.update({
   id: '/ledger',
   path: '/ledger',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const PartiesRoute = PartiesRouteImport.update({
+const AuthenticatedPartiesRoute = AuthenticatedPartiesRouteImport.update({
   id: '/parties',
   path: '/parties',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const PaymentsRoute = PaymentsRouteImport.update({
+const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ProductsRoute = ProductsRouteImport.update({
+const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   id: '/products',
   path: '/products',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const QuotationsRoute = QuotationsRouteImport.update({
+const AuthenticatedQuotationsRoute = AuthenticatedQuotationsRouteImport.update({
   id: '/quotations',
   path: '/quotations',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const DocDocIdRoute = DocDocIdRouteImport.update({
+const AuthenticatedDocDocIdRoute = AuthenticatedDocDocIdRouteImport.update({
   id: '/doc/$docId',
   path: '/doc/$docId',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const DocEditDocIdRoute = DocEditDocIdRouteImport.update({
-  id: '/doc/edit/$docId',
-  path: '/doc/edit/$docId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocNewKindRoute = DocNewKindRouteImport.update({
+const AuthenticatedDocEditDocIdRoute =
+  AuthenticatedDocEditDocIdRouteImport.update({
+    id: '/doc/edit/$docId',
+    path: '/doc/edit/$docId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDocNewKindRoute = AuthenticatedDocNewKindRouteImport.update({
   id: '/doc/new/$kind',
   path: '/doc/new/$kind',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/followups': typeof FollowupsRoute
-  '/invoices': typeof InvoicesRoute
-  '/ledger': typeof LedgerRoute
-  '/parties': typeof PartiesRoute
-  '/payments': typeof PaymentsRoute
-  '/products': typeof ProductsRoute
-  '/quotations': typeof QuotationsRoute
-  '/settings': typeof SettingsRoute
-  '/doc/$docId': typeof DocDocIdRoute
-  '/doc/edit/$docId': typeof DocEditDocIdRoute
-  '/doc/new/$kind': typeof DocNewKindRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/audit': typeof AuthenticatedAuditRoute
+  '/followups': typeof AuthenticatedFollowupsRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
+  '/ledger': typeof AuthenticatedLedgerRoute
+  '/parties': typeof AuthenticatedPartiesRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
+  '/products': typeof AuthenticatedProductsRoute
+  '/quotations': typeof AuthenticatedQuotationsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/doc/$docId': typeof AuthenticatedDocDocIdRoute
+  '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
+  '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/followups': typeof FollowupsRoute
-  '/invoices': typeof InvoicesRoute
-  '/ledger': typeof LedgerRoute
-  '/parties': typeof PartiesRoute
-  '/payments': typeof PaymentsRoute
-  '/products': typeof ProductsRoute
-  '/quotations': typeof QuotationsRoute
-  '/settings': typeof SettingsRoute
-  '/doc/$docId': typeof DocDocIdRoute
-  '/doc/edit/$docId': typeof DocEditDocIdRoute
-  '/doc/new/$kind': typeof DocNewKindRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/audit': typeof AuthenticatedAuditRoute
+  '/followups': typeof AuthenticatedFollowupsRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
+  '/ledger': typeof AuthenticatedLedgerRoute
+  '/parties': typeof AuthenticatedPartiesRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
+  '/products': typeof AuthenticatedProductsRoute
+  '/quotations': typeof AuthenticatedQuotationsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/doc/$docId': typeof AuthenticatedDocDocIdRoute
+  '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
+  '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/followups': typeof FollowupsRoute
-  '/invoices': typeof InvoicesRoute
-  '/ledger': typeof LedgerRoute
-  '/parties': typeof PartiesRoute
-  '/payments': typeof PaymentsRoute
-  '/products': typeof ProductsRoute
-  '/quotations': typeof QuotationsRoute
-  '/settings': typeof SettingsRoute
-  '/doc/$docId': typeof DocDocIdRoute
-  '/doc/edit/$docId': typeof DocEditDocIdRoute
-  '/doc/new/$kind': typeof DocNewKindRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_authenticated/audit': typeof AuthenticatedAuditRoute
+  '/_authenticated/followups': typeof AuthenticatedFollowupsRoute
+  '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
+  '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
+  '/_authenticated/parties': typeof AuthenticatedPartiesRoute
+  '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
+  '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/_authenticated/quotations': typeof AuthenticatedQuotationsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/doc/$docId': typeof AuthenticatedDocDocIdRoute
+  '/_authenticated/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
+  '/_authenticated/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/signup'
+    | '/audit'
     | '/followups'
     | '/invoices'
     | '/ledger'
@@ -143,7 +180,9 @@ export interface FileRouteTypes {
     | '/doc/new/$kind'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/login'
+    | '/signup'
+    | '/audit'
     | '/followups'
     | '/invoices'
     | '/ledger'
@@ -152,142 +191,192 @@ export interface FileRouteTypes {
     | '/products'
     | '/quotations'
     | '/settings'
+    | '/'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
   id:
     | '__root__'
-    | '/'
-    | '/followups'
-    | '/invoices'
-    | '/ledger'
-    | '/parties'
-    | '/payments'
-    | '/products'
-    | '/quotations'
-    | '/settings'
-    | '/doc/$docId'
-    | '/doc/edit/$docId'
-    | '/doc/new/$kind'
+    | '/_authenticated'
+    | '/login'
+    | '/signup'
+    | '/_authenticated/audit'
+    | '/_authenticated/followups'
+    | '/_authenticated/invoices'
+    | '/_authenticated/ledger'
+    | '/_authenticated/parties'
+    | '/_authenticated/payments'
+    | '/_authenticated/products'
+    | '/_authenticated/quotations'
+    | '/_authenticated/settings'
+    | '/_authenticated/'
+    | '/_authenticated/doc/$docId'
+    | '/_authenticated/doc/edit/$docId'
+    | '/_authenticated/doc/new/$kind'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  FollowupsRoute: typeof FollowupsRoute
-  InvoicesRoute: typeof InvoicesRoute
-  LedgerRoute: typeof LedgerRoute
-  PartiesRoute: typeof PartiesRoute
-  PaymentsRoute: typeof PaymentsRoute
-  ProductsRoute: typeof ProductsRoute
-  QuotationsRoute: typeof QuotationsRoute
-  SettingsRoute: typeof SettingsRoute
-  DocDocIdRoute: typeof DocDocIdRoute
-  DocEditDocIdRoute: typeof DocEditDocIdRoute
-  DocNewKindRoute: typeof DocNewKindRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/followups': {
-      id: '/followups'
+    '/_authenticated/audit': {
+      id: '/_authenticated/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuthenticatedAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/followups': {
+      id: '/_authenticated/followups'
       path: '/followups'
       fullPath: '/followups'
-      preLoaderRoute: typeof FollowupsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedFollowupsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/invoices': {
-      id: '/invoices'
+    '/_authenticated/invoices': {
+      id: '/_authenticated/invoices'
       path: '/invoices'
       fullPath: '/invoices'
-      preLoaderRoute: typeof InvoicesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/ledger': {
-      id: '/ledger'
+    '/_authenticated/ledger': {
+      id: '/_authenticated/ledger'
       path: '/ledger'
       fullPath: '/ledger'
-      preLoaderRoute: typeof LedgerRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedLedgerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/parties': {
-      id: '/parties'
+    '/_authenticated/parties': {
+      id: '/_authenticated/parties'
       path: '/parties'
       fullPath: '/parties'
-      preLoaderRoute: typeof PartiesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPartiesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/payments': {
-      id: '/payments'
+    '/_authenticated/payments': {
+      id: '/_authenticated/payments'
       path: '/payments'
       fullPath: '/payments'
-      preLoaderRoute: typeof PaymentsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/products': {
-      id: '/products'
+    '/_authenticated/products': {
+      id: '/_authenticated/products'
       path: '/products'
       fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedProductsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/quotations': {
-      id: '/quotations'
+    '/_authenticated/quotations': {
+      id: '/_authenticated/quotations'
       path: '/quotations'
       fullPath: '/quotations'
-      preLoaderRoute: typeof QuotationsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedQuotationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/settings': {
-      id: '/settings'
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/doc/$docId': {
-      id: '/doc/$docId'
+    '/_authenticated/doc/$docId': {
+      id: '/_authenticated/doc/$docId'
       path: '/doc/$docId'
       fullPath: '/doc/$docId'
-      preLoaderRoute: typeof DocDocIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDocDocIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/doc/edit/$docId': {
-      id: '/doc/edit/$docId'
+    '/_authenticated/doc/edit/$docId': {
+      id: '/_authenticated/doc/edit/$docId'
       path: '/doc/edit/$docId'
       fullPath: '/doc/edit/$docId'
-      preLoaderRoute: typeof DocEditDocIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDocEditDocIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/doc/new/$kind': {
-      id: '/doc/new/$kind'
+    '/_authenticated/doc/new/$kind': {
+      id: '/_authenticated/doc/new/$kind'
       path: '/doc/new/$kind'
       fullPath: '/doc/new/$kind'
-      preLoaderRoute: typeof DocNewKindRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedDocNewKindRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
+  AuthenticatedFollowupsRoute: typeof AuthenticatedFollowupsRoute
+  AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
+  AuthenticatedLedgerRoute: typeof AuthenticatedLedgerRoute
+  AuthenticatedPartiesRoute: typeof AuthenticatedPartiesRoute
+  AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
+  AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
+  AuthenticatedQuotationsRoute: typeof AuthenticatedQuotationsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedDocDocIdRoute: typeof AuthenticatedDocDocIdRoute
+  AuthenticatedDocEditDocIdRoute: typeof AuthenticatedDocEditDocIdRoute
+  AuthenticatedDocNewKindRoute: typeof AuthenticatedDocNewKindRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAuditRoute: AuthenticatedAuditRoute,
+  AuthenticatedFollowupsRoute: AuthenticatedFollowupsRoute,
+  AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
+  AuthenticatedLedgerRoute: AuthenticatedLedgerRoute,
+  AuthenticatedPartiesRoute: AuthenticatedPartiesRoute,
+  AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
+  AuthenticatedProductsRoute: AuthenticatedProductsRoute,
+  AuthenticatedQuotationsRoute: AuthenticatedQuotationsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedDocDocIdRoute: AuthenticatedDocDocIdRoute,
+  AuthenticatedDocEditDocIdRoute: AuthenticatedDocEditDocIdRoute,
+  AuthenticatedDocNewKindRoute: AuthenticatedDocNewKindRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  FollowupsRoute: FollowupsRoute,
-  InvoicesRoute: InvoicesRoute,
-  LedgerRoute: LedgerRoute,
-  PartiesRoute: PartiesRoute,
-  PaymentsRoute: PaymentsRoute,
-  ProductsRoute: ProductsRoute,
-  QuotationsRoute: QuotationsRoute,
-  SettingsRoute: SettingsRoute,
-  DocDocIdRoute: DocDocIdRoute,
-  DocEditDocIdRoute: DocEditDocIdRoute,
-  DocNewKindRoute: DocNewKindRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

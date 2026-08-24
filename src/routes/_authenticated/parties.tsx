@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useErp, uid } from "@/lib/erp/store";
 import { DataTable } from "@/components/erp/DataTable";
+import { CsvTools } from "@/components/erp/CsvTools";
+import { PARTY_HEADERS, partiesToCsv, parsePartiesCsv } from "@/lib/erp/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { inr } from "@/lib/erp/gst";
 import type { Party, PartyType } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/parties")({
+export const Route = createFileRoute("/_authenticated/parties")({
   head: () => ({
     meta: [
       { title: "Customers & Suppliers — Surevic ERP + AI" },
@@ -31,7 +33,7 @@ const blank = (companyId: string): Party => ({
 });
 
 function Parties() {
-  const { state, upsertParty, outstandingFor } = useErp();
+  const { state, upsertParty, outstandingFor, bulkUpsertParties, can } = useErp();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Party>(blank(state.company.id));
 
@@ -50,6 +52,16 @@ function Parties() {
         search={(p) => `${p.name} ${p.gstin} ${p.state} ${p.type}`}
         onRowClick={edit}
         toolbar={
+          <>
+          <CsvTools<Party>
+            label="parties"
+            filename="parties.csv"
+            headers={PARTY_HEADERS}
+            exportCsv={() => partiesToCsv(state.parties)}
+            parse={(t) => parsePartiesCsv(t, state.company.id, uid)}
+            onImport={bulkUpsertParties}
+            disabled={!can("ADMIN", "SALES")}
+          />
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button size="sm" onClick={() => setForm(blank(state.company.id))}>
@@ -94,6 +106,7 @@ function Parties() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          </>
         }
         columns={[
           { key: "name", header: "Name", render: (p) => <span className="font-medium">{p.name}</span> },

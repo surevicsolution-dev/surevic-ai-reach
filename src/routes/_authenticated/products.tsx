@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useErp, uid } from "@/lib/erp/store";
 import { DataTable } from "@/components/erp/DataTable";
+import { CsvTools } from "@/components/erp/CsvTools";
+import { PRODUCT_HEADERS, productsToCsv, parseProductsCsv } from "@/lib/erp/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { inr } from "@/lib/erp/gst";
 import type { Product } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/products")({
+export const Route = createFileRoute("/_authenticated/products")({
   head: () => ({
     meta: [
       { title: "Inventory — Surevic ERP + AI" },
@@ -30,7 +32,7 @@ const blank = (companyId: string): Product => ({
 });
 
 function Products() {
-  const { state, upsertProduct } = useErp();
+  const { state, upsertProduct, bulkUpsertProducts, can } = useErp();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Product>(blank(state.company.id));
   const set = (k: keyof Product, v: string | number) => setForm((f) => ({ ...f, [k]: v }));
@@ -46,6 +48,16 @@ function Products() {
         setOpen(true);
       }}
       toolbar={
+        <>
+        <CsvTools<Product>
+          label="products"
+          filename="products.csv"
+          headers={PRODUCT_HEADERS}
+          exportCsv={() => productsToCsv(state.products)}
+          parse={(t) => parseProductsCsv(t, state.company.id, uid)}
+          onImport={bulkUpsertProducts}
+          disabled={!can("ADMIN", "SALES", "WAREHOUSE")}
+        />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm" onClick={() => setForm(blank(state.company.id))}>
@@ -86,6 +98,7 @@ function Products() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </>
       }
       columns={[
         { key: "sku", header: "SKU", render: (p) => <span className="tabular text-xs font-medium">{p.sku}</span> },

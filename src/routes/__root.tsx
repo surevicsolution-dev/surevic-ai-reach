@@ -128,13 +128,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ErpProvider>
-        <Shell>
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </Shell>
-        <Toaster position="top-right" />
-      </ErpProvider>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      {/* The ERP shell + provider live in the _authenticated layout so /login and /signup stay public. */}
+      <Outlet />
+      <Toaster position="top-right" />
     </QueryClientProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { RotateCcw, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { RotateCcw, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useErp } from "@/lib/erp/store";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { Company, Role } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Company & RBAC — Surevic ERP + AI" },
@@ -28,7 +29,8 @@ const PERMISSIONS: { role: Role; access: string }[] = [
 ];
 
 function Settings() {
-  const { state, updateCompany, reset } = useErp();
+  const { state, updateCompany, can, loadSampleData, wipeData } = useErp();
+  const [busy, setBusy] = useState<"seed" | "wipe" | null>(null);
   const c = state.company;
   const set = (k: keyof Company, v: string) => updateCompany({ [k]: v } as Partial<Company>);
 
@@ -84,21 +86,40 @@ function Settings() {
           <p className="mt-3 text-[11px] text-muted-foreground">Active role: <b>{state.role}</b> (switch in the top bar).</p>
         </section>
 
-        <section className="panel p-4">
-          <h2 className="mb-2 text-sm font-semibold">Demo data</h2>
+        <section className="panel border-destructive/40 p-4">
+          <h2 className="mb-2 text-sm font-semibold text-destructive">Danger zone</h2>
           <p className="mb-3 text-[11px] text-muted-foreground">
-            Restore seeded parties, SICK/Siemens/Omron inventory, invoices and receipts.
+            Admin-only. Sample data adds demo parties, SICK/Siemens/Omron inventory, invoices and receipts to this company.
           </p>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              reset();
-              toast.success("Seed data restored");
-            }}
-          >
-            <RotateCcw className="size-4" /> Reset to seed data
-          </Button>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={!can("ADMIN") || busy !== null}
+              onClick={async () => {
+                setBusy("seed");
+                await loadSampleData();
+                setBusy(null);
+                toast.success("Sample data loaded");
+              }}
+            >
+              <RotateCcw className="size-4" /> {busy === "seed" ? "Loading…" : "Load sample data"}
+            </Button>
+            <Button
+              variant="destructive"
+              className="w-full"
+              disabled={!can("ADMIN") || busy !== null}
+              onClick={async () => {
+                if (!window.confirm("Delete ALL parties, products, documents and payments for this company? This cannot be undone.")) return;
+                setBusy("wipe");
+                await wipeData();
+                setBusy(null);
+                toast.success("All company data wiped");
+              }}
+            >
+              <Trash2 className="size-4" /> {busy === "wipe" ? "Wiping…" : "Reset / wipe all data"}
+            </Button>
+          </div>
         </section>
       </aside>
     </div>

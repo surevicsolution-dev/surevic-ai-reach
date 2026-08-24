@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DocEditor } from "@/components/erp/DocEditor";
 import { useErp } from "@/lib/erp/store";
 
-export const Route = createFileRoute("/doc/edit/$docId")({
+export const Route = createFileRoute("/_authenticated/doc/edit/$docId")({
   head: () => ({
     meta: [
       { title: "Edit document — Surevic ERP + AI" },
