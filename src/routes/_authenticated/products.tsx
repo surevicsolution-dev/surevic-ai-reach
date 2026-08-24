@@ -46,6 +46,16 @@ function Products() {
         setOpen(true);
       }}
       toolbar={
+        <>
+        <CsvTools<Product>
+          label="products"
+          filename="products.csv"
+          headers={PRODUCT_HEADERS}
+          exportCsv={() => productsToCsv(state.products)}
+          parse={(t) => parseProductsCsv(t, state.company.id, uid)}
+          onImport={bulkUpsertProducts}
+          disabled={!can("ADMIN", "SALES", "WAREHOUSE")}
+        />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm" onClick={() => setForm(blank(state.company.id))}>
