@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { RotateCcw, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { RotateCcw, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useErp } from "@/lib/erp/store";
 import { Input } from "@/components/ui/input";
