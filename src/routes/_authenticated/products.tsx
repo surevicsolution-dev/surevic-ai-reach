@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useErp, uid } from "@/lib/erp/store";
 import { DataTable } from "@/components/erp/DataTable";
+import { CsvTools } from "@/components/erp/CsvTools";
+import { PRODUCT_HEADERS, productsToCsv, parseProductsCsv } from "@/lib/erp/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
