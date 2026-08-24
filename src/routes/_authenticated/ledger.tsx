@@ -4,7 +4,7 @@ import { useErp } from "@/lib/erp/store";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { agingBucket, daysOverdue, fmtDate, inr } from "@/lib/erp/gst";
 
-export const Route = createFileRoute("/ledger")({
+export const Route = createFileRoute("/_authenticated/_authenticated/ledger")({
   head: () => ({
     meta: [
       { title: "Ledgers & Aging — Surevic ERP + AI" },

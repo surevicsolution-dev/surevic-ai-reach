@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/erp/StatusBadge";
 import { inr } from "@/lib/erp/gst";
 
-export const Route = createFileRoute("/doc/$docId")({
+export const Route = createFileRoute("/_authenticated/_authenticated/doc/$docId")({
   head: () => ({
     meta: [
       { title: "Document preview — Surevic ERP + AI" },

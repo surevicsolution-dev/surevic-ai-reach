@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { inr } from "@/lib/erp/gst";
 import type { Party, PartyType } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/parties")({
+export const Route = createFileRoute("/_authenticated/_authenticated/parties")({
   head: () => ({
     meta: [
       { title: "Customers & Suppliers — Surevic ERP + AI" },

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { Company, Role } from "@/lib/erp/types";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Company & RBAC — Surevic ERP + AI" },
