@@ -32,7 +32,7 @@ const blank = (companyId: string): Product => ({
 });
 
 function Products() {
-  const { state, upsertProduct } = useErp();
+  const { state, upsertProduct, bulkUpsertProducts, can } = useErp();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Product>(blank(state.company.id));
   const set = (k: keyof Product, v: string | number) => setForm((f) => ({ ...f, [k]: v }));
