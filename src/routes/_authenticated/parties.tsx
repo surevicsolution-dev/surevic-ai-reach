@@ -50,6 +50,16 @@ function Parties() {
         search={(p) => `${p.name} ${p.gstin} ${p.state} ${p.type}`}
         onRowClick={edit}
         toolbar={
+          <>
+          <CsvTools<Party>
+            label="parties"
+            filename="parties.csv"
+            headers={PARTY_HEADERS}
+            exportCsv={() => partiesToCsv(state.parties)}
+            parse={(t) => parsePartiesCsv(t, state.company.id, uid)}
+            onImport={bulkUpsertParties}
+            disabled={!can("ADMIN", "SALES")}
+          />
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button size="sm" onClick={() => setForm(blank(state.company.id))}>
