@@ -104,6 +104,7 @@ function Parties() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          </>
         }
         columns={[
           { key: "name", header: "Name", render: (p) => <span className="font-medium">{p.name}</span> },
