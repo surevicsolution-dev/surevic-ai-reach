@@ -96,7 +96,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </p>
           </div>
 
-          <Select value={companyId ?? undefined} onValueChange={switchCompany}>
+          <Select value={companyId ?? ""} onValueChange={switchCompany}>
             <SelectTrigger className="h-9 w-[190px]">
               <Building2 className="size-4 text-muted-foreground" />
               <SelectValue placeholder="Company" />
