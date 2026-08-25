@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useErp } from "@/lib/erp/store";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PartyCombobox } from "@/components/erp/PartyCombobox";
 import { agingBucket, daysOverdue, fmtDate, inr } from "@/lib/erp/gst";
 
 export const Route = createFileRoute("/_authenticated/ledger")({
@@ -63,10 +64,7 @@ function Ledger() {
   return (
     <div className="space-y-4">
       <div className="panel flex flex-wrap items-center gap-3 p-3">
-        <Select value={partyId} onValueChange={setPartyId}>
-          <SelectTrigger className="w-[320px]"><SelectValue placeholder="Select party" /></SelectTrigger>
-          <SelectContent>{state.parties.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
-        </Select>
+        <PartyCombobox value={partyId} onChange={setPartyId} className="w-[320px]" placeholder="Search party by name, GSTIN, phone…" />
         <div className="ml-auto text-right">
           <p className="text-[11px] uppercase text-muted-foreground">Closing balance</p>
           <p className={`text-xl font-bold tabular ${closing > 0 ? "text-destructive" : "text-success"}`}>{inr(Math.abs(closing))} {closing > 0 ? "Dr" : "Cr"}</p>

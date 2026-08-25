@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PartyCombobox } from "@/components/erp/PartyCombobox";
 import { fmtDate, inr } from "@/lib/erp/gst";
 import type { Payment, PaymentMode } from "@/lib/erp/types";
 
@@ -70,10 +71,7 @@ function Payments() {
             <div className="grid gap-3">
               <div>
                 <Label>Party</Label>
-                <Select value={partyId} onValueChange={(v) => { setPartyId(v); setInvoiceId(""); }}>
-                  <SelectTrigger><SelectValue placeholder="Select party" /></SelectTrigger>
-                  <SelectContent>{state.parties.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
-                </Select>
+                <PartyCombobox value={partyId} onChange={(v) => { setPartyId(v); setInvoiceId(""); }} placeholder="Search party by name, GSTIN, phone…" />
               </div>
               <div>
                 <Label>Against invoice</Label>
