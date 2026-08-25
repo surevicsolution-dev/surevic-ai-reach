@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PartyCombobox } from "@/components/erp/PartyCombobox";
+import { ItemCombobox } from "@/components/erp/ItemCombobox";
 import { Switch } from "@/components/ui/switch";
 import { useErp, uid } from "@/lib/erp/store";
 import { computeTotals, inr } from "@/lib/erp/gst";
-import type { Doc, DocItem } from "@/lib/erp/types";
+import type { Doc, DocItem, Product } from "@/lib/erp/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -34,9 +36,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
   const party = state.parties.find((p) => p.id === partyId);
   const totals = useMemo(() => computeTotals(items, state.company, party), [items, state.company, party]);
 
-  const addItem = (productId: string) => {
-    const p = state.products.find((x) => x.id === productId);
-    if (!p) return;
+  const addProduct = (p: Product) => {
     setItems((it) => [
       ...it,
       { productId: p.id, name: p.name, hsn: p.hsn, qty: 1, rate: p.sellingPrice, taxRate: p.taxRate, unit: p.unit },
@@ -96,16 +96,15 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <Label>Party</Label>
-              <Select value={partyId} onValueChange={setPartyId}>
-                <SelectTrigger><SelectValue placeholder="Select customer / supplier" /></SelectTrigger>
-                <SelectContent>
-                  {state.parties.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name} — {p.state} ({p.stateCode})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <PartyCombobox value={partyId} onChange={setPartyId} placeholder="Search customer by name, GSTIN, phone…" />
+              {party && (
+                <div className="mt-2 rounded-md border bg-muted/40 p-2 text-[11px] text-muted-foreground">
+                  <p className="font-medium text-foreground">{party.name}</p>
+                  <p>GSTIN {party.gstin || "Unregistered"} · {party.state} ({party.stateCode})</p>
+                  {party.billingAddress && <p className="whitespace-pre-line">{party.billingAddress}</p>}
+                  {(party.phone || party.email) && <p>{[party.phone, party.email].filter(Boolean).join(" · ")}</p>}
+                </div>
+              )}
             </div>
             <div><Label>Document No.</Label><Input value={number} onChange={(e) => setNumber(e.target.value)} /></div>
             <div><Label>Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
@@ -123,16 +122,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
         <section className="panel p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">Line items</h2>
-            <Select value="" onValueChange={addItem}>
-              <SelectTrigger className="w-[280px]"><SelectValue placeholder="+ Add product / service" /></SelectTrigger>
-              <SelectContent>
-                {state.products.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.sku} — {p.name.slice(0, 40)} (stock {p.stock})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <ItemCombobox onSelect={addProduct} />
           </div>
 
           {items.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No items yet. Add a product above.</p>}
