@@ -61,7 +61,7 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-neutral-100 text-left">
-              {["#", "Description", "HSN/SAC", "Qty", "Rate", "Taxable", t.interState ? "IGST" : "CGST", t.interState ? "" : "SGST", "Amount"]
+              {["#", "Description", "HSN/SAC", "Qty", "Rate", "Disc %", "Discount", "Taxable", t.interState ? "IGST" : "CGST", t.interState ? "" : "SGST", "Amount"]
                 .filter((h) => h !== "")
                 .map((h) => (
                   <th key={h} className="border border-neutral-400 px-1.5 py-1 text-[10px] font-bold uppercase">
