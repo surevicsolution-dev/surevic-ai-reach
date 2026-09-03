@@ -83,6 +83,8 @@ export function computeTotals(items: DocItem[], company: Company, party?: Party)
   return {
     interState,
     items: taxed,
+    subtotal,
+    discountTotal,
     taxable,
     cgst,
     sgst,
