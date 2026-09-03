@@ -80,6 +80,8 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
                   {num(it.qty)} {it.unit}
                 </td>
                 <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.rate)}</td>
+                <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.discountPct ?? 0)}%</td>
+                <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.discount)}</td>
                 <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.taxable)}</td>
                 {t.interState ? (
                   <td className="border border-neutral-400 px-1.5 py-1 text-right">
