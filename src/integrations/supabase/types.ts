@@ -70,7 +70,9 @@ export type Database = {
           id: string
           ifsc: string
           invoice_prefix: string
+          is_active: boolean
           legal_name: string
+          license_valid_until: string | null
           name: string
           pan: string
           phone: string
@@ -92,7 +94,9 @@ export type Database = {
           id?: string
           ifsc?: string
           invoice_prefix?: string
+          is_active?: boolean
           legal_name?: string
+          license_valid_until?: string | null
           name: string
           pan?: string
           phone?: string
@@ -114,7 +118,9 @@ export type Database = {
           id?: string
           ifsc?: string
           invoice_prefix?: string
+          is_active?: boolean
           legal_name?: string
+          license_valid_until?: string | null
           name?: string
           pan?: string
           phone?: string
@@ -350,6 +356,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       products: {
         Row: {
