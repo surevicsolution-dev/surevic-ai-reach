@@ -67,6 +67,10 @@ export interface DocItem {
   rate: number;
   taxRate: number;
   unit: string;
+  /** Discount percentage applied on gross (qty × rate) */
+  discountPct?: number;
+  /** Absolute discount in ₹ (takes precedence over discountPct when set) */
+  discountAmt?: number;
 }
 
 export interface Doc {
