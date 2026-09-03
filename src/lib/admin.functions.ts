@@ -114,9 +114,9 @@ export const updateLicense = createServerFn({ method: "POST" })
   .inputValidator((d: { companyId: string; licenseValidUntil?: string | null; isActive?: boolean }) => d)
   .handler(async ({ data, context }) => {
     const admin = await assertPlatformAdmin(context);
-    const patch: Record<string, unknown> = {};
-    if (data.licenseValidUntil !== undefined) patch["license_valid_until"] = data.licenseValidUntil || null;
-    if (data.isActive !== undefined) patch["is_active"] = data.isActive;
+    const patch: { license_valid_until?: string | null; is_active?: boolean } = {};
+    if (data.licenseValidUntil !== undefined) patch.license_valid_until = data.licenseValidUntil || null;
+    if (data.isActive !== undefined) patch.is_active = data.isActive;
     const { error } = await admin.from("companies").update(patch).eq("id", data.companyId);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -137,10 +137,10 @@ export const updateUserAccount = createServerFn({ method: "POST" })
   .inputValidator((d: { userId: string; email?: string; password?: string; banned?: boolean }) => d)
   .handler(async ({ data, context }) => {
     const admin = await assertPlatformAdmin(context);
-    const patch: Record<string, unknown> = {};
-    if (data.email) patch["email"] = data.email;
-    if (data.password) patch["password"] = data.password;
-    if (data.banned !== undefined) patch["ban_duration"] = data.banned ? "876000h" : "none";
+    const patch: { email?: string; password?: string; ban_duration?: string } = {};
+    if (data.email) patch.email = data.email;
+    if (data.password) patch.password = data.password;
+    if (data.banned !== undefined) patch.ban_duration = data.banned ? "876000h" : "none";
     const { error } = await admin.auth.admin.updateUserById(data.userId, patch);
     if (error) throw new Error(error.message);
     if (data.email) await admin.from("profiles").update({ email: data.email }).eq("id", data.userId);
