@@ -120,6 +120,8 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
             <table className="w-full border-collapse">
               <tbody>
                 {[
+                  ["Subtotal (Gross)", t.subtotal],
+                  ["Total Discount", t.discountTotal],
                   ["Taxable Value", t.taxable],
                   ...(t.interState ? ([["IGST", t.igst]] as [string, number][]) : ([["CGST", t.cgst], ["SGST", t.sgst]] as [string, number][])),
                   ["Round Off", t.roundOff],
