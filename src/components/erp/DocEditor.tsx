@@ -199,6 +199,8 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
               : "Select a party to determine CGST/SGST vs IGST"}
           </p>
           <dl className="space-y-1.5 text-sm">
+            <Row label="Subtotal (gross)" value={inr(totals.subtotal)} />
+            <Row label="Total discount" value={`− ${inr(totals.discountTotal)}`} />
             <Row label="Taxable value" value={inr(totals.taxable)} />
             {totals.interState ? (
               <Row label="IGST" value={inr(totals.igst)} />
