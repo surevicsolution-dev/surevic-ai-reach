@@ -11,7 +11,7 @@ import { PartyCombobox } from "@/components/erp/PartyCombobox";
 import { ItemCombobox } from "@/components/erp/ItemCombobox";
 import { Switch } from "@/components/ui/switch";
 import { useErp, uid } from "@/lib/erp/store";
-import { computeTotals, inr } from "@/lib/erp/gst";
+import { computeTotals, inr, lineMath } from "@/lib/erp/gst";
 import type { Doc, DocItem, Product } from "@/lib/erp/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
