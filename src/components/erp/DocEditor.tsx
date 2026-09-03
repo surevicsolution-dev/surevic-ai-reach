@@ -11,7 +11,7 @@ import { PartyCombobox } from "@/components/erp/PartyCombobox";
 import { ItemCombobox } from "@/components/erp/ItemCombobox";
 import { Switch } from "@/components/ui/switch";
 import { useErp, uid } from "@/lib/erp/store";
-import { computeTotals, inr } from "@/lib/erp/gst";
+import { computeTotals, inr, lineMath } from "@/lib/erp/gst";
 import type { Doc, DocItem, Product } from "@/lib/erp/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -128,27 +128,62 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
           {items.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No items yet. Add a product above.</p>}
 
           <div className="space-y-2">
-            {items.map((it, i) => (
-              <div key={i} className="grid grid-cols-2 items-end gap-2 rounded-md border p-2 sm:grid-cols-[1fr_80px_110px_90px_110px_36px]">
-                <div className="col-span-2 sm:col-span-1">
-                  <p className="text-xs font-medium">{it.name}</p>
-                  <p className="text-[11px] text-muted-foreground">HSN {it.hsn} · {it.unit}</p>
+            {items.map((it, i) => {
+              const m = lineMath(it);
+              return (
+                <div key={i} className="grid grid-cols-2 items-end gap-2 rounded-md border p-2 sm:grid-cols-[minmax(140px,1fr)_72px_92px_70px_92px_84px_130px_36px]">
+                  <div className="col-span-2 sm:col-span-1">
+                    <p className="text-xs font-medium">{it.name}</p>
+                    <p className="text-[11px] text-muted-foreground">HSN {it.hsn} · {it.unit}</p>
+                  </div>
+                  <div><Label className="text-[10px]">Qty</Label><Input className="tabular" type="number" min={1} value={it.qty} onChange={(e) => patch(i, { qty: Number(e.target.value) })} /></div>
+                  <div><Label className="text-[10px]">Rate</Label><Input className="tabular" type="number" value={it.rate} onChange={(e) => patch(i, { rate: Number(e.target.value) })} /></div>
+                  <div>
+                    <Label className="text-[10px]">Disc %</Label>
+                    <Input
+                      className="tabular"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={it.discountPct ?? 0}
+                      onChange={(e) => {
+                        const pct = Number(e.target.value) || 0;
+                        const gross = (it.qty || 0) * (it.rate || 0);
+                        patch(i, { discountPct: pct, discountAmt: +((gross * pct) / 100).toFixed(2) });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px]">Disc ₹</Label>
+                    <Input
+                      className="tabular"
+                      type="number"
+                      min={0}
+                      value={it.discountAmt ?? m.discount}
+                      onChange={(e) => {
+                        const amt = Number(e.target.value) || 0;
+                        const gross = (it.qty || 0) * (it.rate || 0);
+                        patch(i, { discountAmt: amt, discountPct: gross ? +((amt / gross) * 100).toFixed(2) : 0 });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px]">GST %</Label>
+                    <Select value={String(it.taxRate)} onValueChange={(v) => patch(i, { taxRate: Number(v) })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{[0, 5, 12, 18, 28].map((r) => <SelectItem key={r} value={String(r)}>{r}%</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div className="pb-1 text-right">
+                    <p className="tabular text-[10px] text-muted-foreground">Taxable {inr(m.taxable)} · GST {inr(m.tax)}</p>
+                    <p className="tabular text-sm font-semibold">{inr(m.total)}</p>
+                  </div>
+                  <Button variant="ghost" size="icon" onClick={() => setItems((x) => x.filter((_, idx) => idx !== i))}>
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
                 </div>
-                <div><Label className="text-[10px]">Qty</Label><Input className="tabular" type="number" min={1} value={it.qty} onChange={(e) => patch(i, { qty: Number(e.target.value) })} /></div>
-                <div><Label className="text-[10px]">Rate</Label><Input className="tabular" type="number" value={it.rate} onChange={(e) => patch(i, { rate: Number(e.target.value) })} /></div>
-                <div>
-                  <Label className="text-[10px]">GST %</Label>
-                  <Select value={String(it.taxRate)} onValueChange={(v) => patch(i, { taxRate: Number(v) })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{[0, 5, 12, 18, 28].map((r) => <SelectItem key={r} value={String(r)}>{r}%</SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
-                <div className="tabular pb-2 text-right text-sm font-semibold">{inr(it.qty * it.rate)}</div>
-                <Button variant="ghost" size="icon" onClick={() => setItems((x) => x.filter((_, idx) => idx !== i))}>
-                  <Trash2 className="size-4 text-destructive" />
-                </Button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>
@@ -164,6 +199,8 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
               : "Select a party to determine CGST/SGST vs IGST"}
           </p>
           <dl className="space-y-1.5 text-sm">
+            <Row label="Subtotal (gross)" value={inr(totals.subtotal)} />
+            <Row label="Total discount" value={`− ${inr(totals.discountTotal)}`} />
             <Row label="Taxable value" value={inr(totals.taxable)} />
             {totals.interState ? (
               <Row label="IGST" value={inr(totals.igst)} />

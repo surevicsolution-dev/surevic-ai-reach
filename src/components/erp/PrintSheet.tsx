@@ -61,7 +61,7 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-neutral-100 text-left">
-              {["#", "Description", "HSN/SAC", "Qty", "Rate", "Taxable", t.interState ? "IGST" : "CGST", t.interState ? "" : "SGST", "Amount"]
+              {["#", "Description", "HSN/SAC", "Qty", "Rate", "Disc %", "Discount", "Taxable", t.interState ? "IGST" : "CGST", t.interState ? "" : "SGST", "Amount"]
                 .filter((h) => h !== "")
                 .map((h) => (
                   <th key={h} className="border border-neutral-400 px-1.5 py-1 text-[10px] font-bold uppercase">
@@ -80,6 +80,8 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
                   {num(it.qty)} {it.unit}
                 </td>
                 <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.rate)}</td>
+                <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.discountPct ?? 0)}%</td>
+                <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.discount)}</td>
                 <td className="border border-neutral-400 px-1.5 py-1 text-right">{num(it.taxable)}</td>
                 {t.interState ? (
                   <td className="border border-neutral-400 px-1.5 py-1 text-right">
@@ -118,6 +120,8 @@ export function PrintSheet({ doc, company, party }: { doc: Doc; company: Company
             <table className="w-full border-collapse">
               <tbody>
                 {[
+                  ["Subtotal (Gross)", t.subtotal],
+                  ["Total Discount", t.discountTotal],
                   ["Taxable Value", t.taxable],
                   ...(t.interState ? ([["IGST", t.igst]] as [string, number][]) : ([["CGST", t.cgst], ["SGST", t.sgst]] as [string, number][])),
                   ["Round Off", t.roundOff],
