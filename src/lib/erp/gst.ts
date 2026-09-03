@@ -11,6 +11,8 @@ export const num = (n: number) =>
   new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(n || 0);
 
 export interface ItemTax extends DocItem {
+  gross: number;
+  discount: number;
   taxable: number;
   cgst: number;
   sgst: number;
@@ -21,6 +23,8 @@ export interface ItemTax extends DocItem {
 export interface DocTotals {
   interState: boolean;
   items: ItemTax[];
+  subtotal: number;
+  discountTotal: number;
   taxable: number;
   cgst: number;
   sgst: number;
@@ -31,18 +35,32 @@ export interface DocTotals {
   taxSlabs: { rate: number; taxable: number; cgst: number; sgst: number; igst: number }[];
 }
 
+/** Gross → discount → taxable for a single line item. */
+export function lineMath(it: DocItem) {
+  const gross = +((it.qty || 0) * (it.rate || 0)).toFixed(2);
+  const raw =
+    it.discountAmt !== undefined && it.discountAmt !== null && !Number.isNaN(it.discountAmt)
+      ? it.discountAmt
+      : (gross * (it.discountPct || 0)) / 100;
+  const discount = +Math.min(Math.max(raw || 0, 0), gross).toFixed(2);
+  const taxable = +(gross - discount).toFixed(2);
+  const tax = +((taxable * (it.taxRate || 0)) / 100).toFixed(2);
+  return { gross, discount, taxable, tax, total: +(taxable + tax).toFixed(2) };
+}
+
 export function computeTotals(items: DocItem[], company: Company, party?: Party): DocTotals {
   const interState = !!party && party.stateCode !== company.stateCode;
   const taxed: ItemTax[] = items.map((it) => {
-    const taxable = +(it.qty * it.rate).toFixed(2);
-    const tax = +((taxable * it.taxRate) / 100).toFixed(2);
+    const { gross, discount, taxable, tax, total } = lineMath(it);
     const cgst = interState ? 0 : +(tax / 2).toFixed(2);
     const sgst = interState ? 0 : +(tax / 2).toFixed(2);
     const igst = interState ? tax : 0;
-    return { ...it, taxable, cgst, sgst, igst, total: +(taxable + tax).toFixed(2) };
+    return { ...it, gross, discount, taxable, cgst, sgst, igst, total };
   });
 
   const sum = (f: (i: ItemTax) => number) => +taxed.reduce((a, b) => a + f(b), 0).toFixed(2);
+  const subtotal = sum((i) => i.gross);
+  const discountTotal = sum((i) => i.discount);
   const taxable = sum((i) => i.taxable);
   const cgst = sum((i) => i.cgst);
   const sgst = sum((i) => i.sgst);
