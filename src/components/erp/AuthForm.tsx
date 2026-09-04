@@ -21,6 +21,25 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     });
   }, [navigate]);
 
+  const forgotPassword = async () => {
+    if (!email.trim()) {
+      toast.error("Enter your email first, then click Forgot password.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Password reset email sent — check your inbox.");
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const submit = async () => {
     setBusy(true);
     try {
@@ -91,7 +110,18 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.in" />
             </div>
             <div>
-              <Label>Password</Label>
+              <div className="flex items-center justify-between">
+                <Label>Password</Label>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => void forgotPassword()}
+                    className="text-xs font-medium text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <Button type="submit" className="w-full" disabled={busy}>

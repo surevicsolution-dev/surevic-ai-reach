@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
@@ -22,6 +23,7 @@ import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedQuotationsRouteImport } from './routes/_authenticated/quotations'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedDocDocIdRouteImport } from './routes/_authenticated/doc.$docId'
 import { Route as AuthenticatedDocEditDocIdRouteImport } from './routes/_authenticated/doc.edit.$docId'
 import { Route as AuthenticatedDocNewKindRouteImport } from './routes/_authenticated/doc.new.$kind'
@@ -33,6 +35,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -90,6 +97,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDocDocIdRoute = AuthenticatedDocDocIdRouteImport.update({
   id: '/doc/$docId',
   path: '/doc/$docId',
@@ -110,6 +122,7 @@ const AuthenticatedDocNewKindRoute = AuthenticatedDocNewKindRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/followups': typeof AuthenticatedFollowupsRoute
@@ -120,12 +133,14 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/followups': typeof AuthenticatedFollowupsRoute
@@ -137,6 +152,7 @@ export interface FileRoutesByTo {
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
@@ -145,6 +161,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/followups': typeof AuthenticatedFollowupsRoute
@@ -156,6 +173,7 @@ export interface FileRoutesById {
   '/_authenticated/quotations': typeof AuthenticatedQuotationsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/_authenticated/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/_authenticated/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
@@ -165,6 +183,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/audit'
     | '/followups'
@@ -175,12 +194,14 @@ export interface FileRouteTypes {
     | '/products'
     | '/quotations'
     | '/settings'
+    | '/admin/users'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/audit'
     | '/followups'
@@ -192,6 +213,7 @@ export interface FileRouteTypes {
     | '/quotations'
     | '/settings'
     | '/'
+    | '/admin/users'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
@@ -199,6 +221,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/_authenticated/audit'
     | '/_authenticated/followups'
@@ -210,6 +233,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quotations'
     | '/_authenticated/settings'
     | '/_authenticated/'
+    | '/_authenticated/admin/users'
     | '/_authenticated/doc/$docId'
     | '/_authenticated/doc/edit/$docId'
     | '/_authenticated/doc/new/$kind'
@@ -218,6 +242,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
 }
 
@@ -235,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -314,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/doc/$docId': {
       id: '/_authenticated/doc/$docId'
       path: '/doc/$docId'
@@ -349,6 +388,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedQuotationsRoute: typeof AuthenticatedQuotationsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedDocDocIdRoute: typeof AuthenticatedDocDocIdRoute
   AuthenticatedDocEditDocIdRoute: typeof AuthenticatedDocEditDocIdRoute
   AuthenticatedDocNewKindRoute: typeof AuthenticatedDocNewKindRoute
@@ -365,6 +405,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedQuotationsRoute: AuthenticatedQuotationsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedDocDocIdRoute: AuthenticatedDocDocIdRoute,
   AuthenticatedDocEditDocIdRoute: AuthenticatedDocEditDocIdRoute,
   AuthenticatedDocNewKindRoute: AuthenticatedDocNewKindRoute,
@@ -376,6 +417,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport

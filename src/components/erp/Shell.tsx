@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import {
   BarChart3, Boxes, FileText, Users, ReceiptIndianRupee, Wallet,
-  BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2,
+  BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2, KeyRound,
 } from "lucide-react";
 import { useErp } from "@/lib/erp/store";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ const NAV = [
   { to: "/parties", label: "Customers & Suppliers", icon: Users },
   { to: "/products", label: "Inventory", icon: Boxes },
   { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
+  { to: "/admin/users", label: "Super Admin", icon: KeyRound },
   { to: "/settings", label: "Company & RBAC", icon: Settings },
 ] as const;
 
