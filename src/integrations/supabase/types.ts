@@ -63,12 +63,16 @@ export type Database = {
           account_no: string
           address: string
           bank_name: string
+          base_currency: string
+          country: string
           created_at: string
           created_by: string
           email: string
+          fy_start_month: number
           gstin: string
           id: string
           ifsc: string
+          industry: string
           invoice_prefix: string
           is_active: boolean
           legal_name: string
@@ -80,6 +84,7 @@ export type Database = {
           state: string
           state_code: string
           terms: string[]
+          trial_ends_at: string
           upi_id: string
           website: string
         }
@@ -87,12 +92,16 @@ export type Database = {
           account_no?: string
           address?: string
           bank_name?: string
+          base_currency?: string
+          country?: string
           created_at?: string
           created_by?: string
           email?: string
+          fy_start_month?: number
           gstin?: string
           id?: string
           ifsc?: string
+          industry?: string
           invoice_prefix?: string
           is_active?: boolean
           legal_name?: string
@@ -104,6 +113,7 @@ export type Database = {
           state?: string
           state_code?: string
           terms?: string[]
+          trial_ends_at?: string
           upi_id?: string
           website?: string
         }
@@ -111,12 +121,16 @@ export type Database = {
           account_no?: string
           address?: string
           bank_name?: string
+          base_currency?: string
+          country?: string
           created_at?: string
           created_by?: string
           email?: string
+          fy_start_month?: number
           gstin?: string
           id?: string
           ifsc?: string
+          industry?: string
           invoice_prefix?: string
           is_active?: boolean
           legal_name?: string
@@ -128,6 +142,7 @@ export type Database = {
           state?: string
           state_code?: string
           terms?: string[]
+          trial_ends_at?: string
           upi_id?: string
           website?: string
         }
