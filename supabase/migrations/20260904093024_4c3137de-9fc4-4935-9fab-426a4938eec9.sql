@@ -1,0 +1,6 @@
+ALTER TABLE public.companies
+  ADD COLUMN IF NOT EXISTS country text NOT NULL DEFAULT 'India',
+  ADD COLUMN IF NOT EXISTS base_currency text NOT NULL DEFAULT 'INR',
+  ADD COLUMN IF NOT EXISTS fy_start_month smallint NOT NULL DEFAULT 4,
+  ADD COLUMN IF NOT EXISTS industry text NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS trial_ends_at date NOT NULL DEFAULT (CURRENT_DATE + 14);
