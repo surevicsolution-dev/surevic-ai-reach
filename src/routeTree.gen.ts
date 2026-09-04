@@ -22,6 +22,7 @@ import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedQuotationsRouteImport } from './routes/_authenticated/quotations'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedDocDocIdRouteImport } from './routes/_authenticated/doc.$docId'
 import { Route as AuthenticatedDocEditDocIdRouteImport } from './routes/_authenticated/doc.edit.$docId'
 import { Route as AuthenticatedDocNewKindRouteImport } from './routes/_authenticated/doc.new.$kind'
@@ -90,6 +91,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDocDocIdRoute = AuthenticatedDocDocIdRouteImport.update({
   id: '/doc/$docId',
   path: '/doc/$docId',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/quotations': typeof AuthenticatedQuotationsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/doc/$docId': typeof AuthenticatedDocDocIdRoute
   '/_authenticated/doc/edit/$docId': typeof AuthenticatedDocEditDocIdRoute
   '/_authenticated/doc/new/$kind': typeof AuthenticatedDocNewKindRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/quotations'
     | '/settings'
+    | '/admin/users'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/quotations'
     | '/settings'
     | '/'
+    | '/admin/users'
     | '/doc/$docId'
     | '/doc/edit/$docId'
     | '/doc/new/$kind'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quotations'
     | '/_authenticated/settings'
     | '/_authenticated/'
+    | '/_authenticated/admin/users'
     | '/_authenticated/doc/$docId'
     | '/_authenticated/doc/edit/$docId'
     | '/_authenticated/doc/new/$kind'
@@ -314,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/doc/$docId': {
       id: '/_authenticated/doc/$docId'
       path: '/doc/$docId'
@@ -349,6 +368,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedQuotationsRoute: typeof AuthenticatedQuotationsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedDocDocIdRoute: typeof AuthenticatedDocDocIdRoute
   AuthenticatedDocEditDocIdRoute: typeof AuthenticatedDocEditDocIdRoute
   AuthenticatedDocNewKindRoute: typeof AuthenticatedDocNewKindRoute
@@ -365,6 +385,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedQuotationsRoute: AuthenticatedQuotationsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedDocDocIdRoute: AuthenticatedDocDocIdRoute,
   AuthenticatedDocEditDocIdRoute: AuthenticatedDocEditDocIdRoute,
   AuthenticatedDocNewKindRoute: AuthenticatedDocNewKindRoute,
