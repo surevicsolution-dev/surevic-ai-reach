@@ -225,7 +225,6 @@ function AdminUsers() {
               Update password
             </Button>
           </DialogFooter>
-        </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
