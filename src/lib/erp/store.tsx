@@ -172,10 +172,7 @@ export function ErpProvider({ children }: { children: ReactNode }) {
         .select()
         .single();
       if (fail(error, "Create company") || !data) return null;
-      const { error: mErr } = await supabase
-        .from("company_members")
-        .insert({ company_id: data.id, user_id: user.id, role: "ADMIN" });
-      if (fail(mErr, "Company membership")) return null;
+      // Membership (creator = ADMIN) is created by a database trigger.
       await loadCompanies();
       switchCompany(data.id);
       return data.id as string;
