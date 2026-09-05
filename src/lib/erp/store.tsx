@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { seedCompany, seedDocs, seedParties, seedPayments, seedProducts } from "./seed";
 import type { Company, Doc, DocItem, ErpState, Party, Payment, Product, Role } from "./types";
 import { computeTotals, paidAgainst } from "./gst";
+import { metaOf } from "./doc-kinds";
+
 import {
   fromCompany, fromDoc, fromParty, fromPayment, fromProduct,
   toAudit, toCompany, toDoc, toParty, toPayment, toProduct, type AuditEntry,
