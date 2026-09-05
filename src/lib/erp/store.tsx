@@ -384,20 +384,23 @@ export function ErpProvider({ children }: { children: ReactNode }) {
     [state.docs, logAudit],
   );
 
-  const convertQuotation = useCallback(
-    (id: string) => {
+  const convertDoc = useCallback(
+    (id: string, target?: Doc["kind"]) => {
       const q = state.docs.find((d) => d.id === id);
       if (!q || !companyId) return null;
+      const to = target ?? metaOf(q.kind).convertTo;
+      if (!to) return null;
       const inv: Doc = {
         ...q,
         id: uid(),
         companyId,
-        kind: "INVOICE",
-        number: nextNumber("INVOICE"),
+        kind: to,
+        number: nextNumber(to),
         date: new Date().toISOString().slice(0, 10),
         dueDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
         status: "UNPAID",
       };
+
       delete inv.convertedTo;
       const updatedQ: Doc = { ...q, status: "ACCEPTED", convertedTo: inv.id };
       const changed: Product[] = [];
