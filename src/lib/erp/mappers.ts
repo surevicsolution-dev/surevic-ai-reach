@@ -21,6 +21,11 @@ export const toCompany = (r: any): Company => ({
   invoicePrefix: r.invoice_prefix ?? "INV-",
   quotePrefix: r.quote_prefix ?? "QTN-",
   terms: (r.terms ?? []) as string[],
+  country: r.country ?? "India",
+  baseCurrency: r.base_currency ?? "INR",
+  fyStartMonth: Number(r.fy_start_month ?? 4),
+  industry: r.industry ?? "",
+  trialEndsAt: r.trial_ends_at ?? "",
 });
 
 export const fromCompany = (c: Partial<Company>): any => {
@@ -42,8 +47,13 @@ export const fromCompany = (c: Partial<Company>): any => {
   if (c.invoicePrefix !== undefined) o["invoice_prefix"] = c.invoicePrefix;
   if (c.quotePrefix !== undefined) o["quote_prefix"] = c.quotePrefix;
   if (c.terms !== undefined) o["terms"] = c.terms;
+  if (c.country !== undefined) o["country"] = c.country;
+  if (c.baseCurrency !== undefined) o["base_currency"] = c.baseCurrency;
+  if (c.fyStartMonth !== undefined) o["fy_start_month"] = c.fyStartMonth;
+  if (c.industry !== undefined) o["industry"] = c.industry;
   return o;
 };
+
 
 export const toParty = (r: any): Party => ({
   id: r.id,
