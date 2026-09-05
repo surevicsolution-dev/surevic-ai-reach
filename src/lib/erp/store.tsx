@@ -223,15 +223,21 @@ export function ErpProvider({ children }: { children: ReactNode }) {
   );
   const nextNumber = useCallback(
     (kind: Doc["kind"]) => {
-      const prefix = kind === "INVOICE" ? state.company.invoicePrefix : state.company.quotePrefix;
+      const prefix =
+        kind === "INVOICE"
+          ? state.company.invoicePrefix || "INV-"
+          : kind === "QUOTATION"
+            ? state.company.quotePrefix || "QTN-"
+            : metaOf(kind).prefix;
       const nums = state.docs
         .filter((d) => d.kind === kind)
-        .map((d) => parseInt(d.number.replace(/\D/g, "").slice(-4), 10) || 0);
+        .map((d) => parseInt(d.number.replace(/\D/g, "").slice(-5), 10) || 0);
       const next = (nums.length ? Math.max(...nums) : 0) + 1;
-      return `${prefix}${String(next).padStart(4, "0")}`;
+      return `${prefix}${String(next).padStart(5, "0")}`;
     },
     [state.docs, state.company],
   );
+
 
   const can = useCallback((...roles: Role[]) => roles.includes(state.role), [state.role]);
 
@@ -404,28 +410,32 @@ export function ErpProvider({ children }: { children: ReactNode }) {
       delete inv.convertedTo;
       const updatedQ: Doc = { ...q, status: "ACCEPTED", convertedTo: inv.id };
       const changed: Product[] = [];
+      const sign = to === "BILL" ? 1 : -1;
       setState((s) => ({
         ...s,
         docs: [inv, ...s.docs.map((d) => (d.id === id ? updatedQ : d))],
         products: s.products.map((p) => {
           const it = inv.items.find((i) => i.productId === p.id);
           if (!it) return p;
-          const next = { ...p, stock: p.stock - it.qty };
+          const next = { ...p, stock: p.stock + sign * it.qty };
           changed.push(next);
           return next;
         }),
       }));
       void (async () => {
         const { error } = await supabase.from("docs").insert(fromDoc(inv));
-        if (fail(error, "Convert quotation")) return;
+        if (fail(error, "Convert document")) return;
         await supabase.from("docs").update({ status: "ACCEPTED", converted_to: inv.id }).eq("id", id);
         await persistStock(changed);
-        await logAudit("CONVERT", "INVOICE", inv.id, `${q.number} → ${inv.number}`);
+        await logAudit("CONVERT", to, inv.id, `${q.number} → ${inv.number}`);
       })();
       return inv;
     },
     [state.docs, companyId, nextNumber, logAudit, persistStock],
   );
+
+  const convertQuotation = useCallback((id: string) => convertDoc(id, "INVOICE"), [convertDoc]);
+
 
   const addPayment = useCallback(
     (p: Payment) => {
