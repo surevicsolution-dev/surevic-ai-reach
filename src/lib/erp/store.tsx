@@ -59,7 +59,9 @@ const emptyCompany: Company = {
   id: "", name: "", legalName: "", gstin: "", pan: "", state: "", stateCode: "", address: "",
   phone: "", email: "", website: "", bankName: "", accountNo: "", ifsc: "", upiId: "",
   invoicePrefix: "INV-", quotePrefix: "QTN-", terms: [],
+  country: "India", baseCurrency: "INR", fyStartMonth: 4, industry: "", trialEndsAt: "",
 };
+
 
 const emptyState: ErpState = {
   company: emptyCompany, role: "ADMIN", parties: [], products: [], docs: [], payments: [],
