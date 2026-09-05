@@ -14,7 +14,7 @@ import {
 
 const COMPANY_KEY = "surevic-erp-company";
 
-export interface CompanyRef { id: string; name: string; role: Role }
+export interface CompanyRef { id: string; name: string; role: Role; gstin: string; trialEndsAt: string }
 
 interface Ctx {
   state: ErpState;
@@ -39,8 +39,11 @@ interface Ctx {
   saveDoc: (d: Doc) => void;
   removeDoc: (id: string) => void;
   convertQuotation: (id: string) => Doc | null;
+  convertDoc: (id: string, target?: Doc["kind"]) => Doc | null;
   addPayment: (p: Payment) => void;
   nextNumber: (kind: Doc["kind"]) => string;
+  hasSelection: boolean;
+
   loadSampleData: () => Promise<void>;
   wipeData: () => Promise<void>;
   reset: () => void;
