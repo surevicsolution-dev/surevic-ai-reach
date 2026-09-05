@@ -120,19 +120,30 @@ export function ErpProvider({ children }: { children: ReactNode }) {
     }
     const { data, error } = await supabase
       .from("company_members")
-      .select("role, company_id, companies(id, name)")
+      .select("role, company_id, companies(id, name, gstin, trial_ends_at)")
       .eq("user_id", user.id);
     if (error) { toast.error(error.message); setLoading(false); return; }
     const list: CompanyRef[] = (data ?? [])
       .filter((m) => m.companies)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((m) => ({ id: (m.companies as any).id, name: (m.companies as any).name, role: m.role as Role }));
+      .map((m) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const c = m.companies as any;
+        return {
+          id: c.id, name: c.name, role: m.role as Role,
+          gstin: c.gstin ?? "", trialEndsAt: c.trial_ends_at ?? "",
+        };
+      });
     setCompanies(list);
     const stored = typeof localStorage !== "undefined" ? localStorage.getItem(COMPANY_KEY) : null;
-    const pick = list.find((c) => c.id === stored)?.id ?? list[0]?.id ?? null;
+    const storedValid = list.find((c) => c.id === stored)?.id ?? null;
+    // Only auto-select when the user has exactly one workspace; otherwise let
+    // the organization picker decide.
+    const pick = storedValid ?? (list.length === 1 ? (list[0]?.id ?? null) : null);
+    setHasSelection(!!pick);
     setCompanyId(pick);
     if (!pick) { setState(emptyState); setLoading(false); }
   }, [user]);
+
 
   useEffect(() => { void loadCompanies(); }, [loadCompanies]);
 
@@ -165,8 +176,10 @@ export function ErpProvider({ children }: { children: ReactNode }) {
 
   const switchCompany = useCallback((id: string) => {
     localStorage.setItem(COMPANY_KEY, id);
+    setHasSelection(true);
     setCompanyId(id);
   }, []);
+
 
   const createCompany = useCallback(
     async (name: string, patch?: Partial<Company>) => {
