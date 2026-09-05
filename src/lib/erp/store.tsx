@@ -75,6 +75,8 @@ export function ErpProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState<CompanyRef[]>([]);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [hasSelection, setHasSelection] = useState(false);
+
   const [state, setState] = useState<ErpState>(emptyState);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [draft, setDraft] = useState<{ partyId?: string; items: DocItem[] } | null>(null);
