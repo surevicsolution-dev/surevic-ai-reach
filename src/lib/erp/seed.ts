@@ -31,6 +31,12 @@ export const seedCompany: Company = {
     "Warranty as per respective OEM standard terms.",
     "Subject to Mumbai jurisdiction only.",
   ],
+  country: "India",
+  baseCurrency: "INR",
+  fyStartMonth: 4,
+  industry: "Industrial Automation",
+  trialEndsAt: "",
+
 };
 
 export const seedParties: Party[] = [

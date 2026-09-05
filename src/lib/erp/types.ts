@@ -6,6 +6,14 @@ export type DocStatus = "DRAFT" | "SENT" | "ACCEPTED" | "UNPAID" | "PARTIAL" | "
 
 export type PaymentMode = "BANK" | "CHEQUE" | "UPI" | "CASH";
 
+export type DocKind =
+  | "QUOTATION"
+  | "SALESORDER"
+  | "PROFORMA"
+  | "INVOICE"
+  | "PURCHASEORDER"
+  | "BILL";
+
 export interface Company {
   id: string;
   name: string;
@@ -25,7 +33,13 @@ export interface Company {
   invoicePrefix: string;
   quotePrefix: string;
   terms: string[];
+  country: string;
+  baseCurrency: string;
+  fyStartMonth: number;
+  industry: string;
+  trialEndsAt: string;
 }
+
 
 export interface Party {
   id: string;
@@ -76,7 +90,8 @@ export interface DocItem {
 export interface Doc {
   id: string;
   companyId: string;
-  kind: "QUOTATION" | "INVOICE";
+  kind: DocKind;
+
   number: string;
   date: string;
   dueDate?: string;

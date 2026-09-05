@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { seedCompany, seedDocs, seedParties, seedPayments, seedProducts } from "./seed";
 import type { Company, Doc, DocItem, ErpState, Party, Payment, Product, Role } from "./types";
 import { computeTotals, paidAgainst } from "./gst";
+import { metaOf } from "./doc-kinds";
+
 import {
   fromCompany, fromDoc, fromParty, fromPayment, fromProduct,
   toAudit, toCompany, toDoc, toParty, toPayment, toProduct, type AuditEntry,
@@ -14,7 +16,7 @@ import {
 
 const COMPANY_KEY = "surevic-erp-company";
 
-export interface CompanyRef { id: string; name: string; role: Role }
+export interface CompanyRef { id: string; name: string; role: Role; gstin: string; trialEndsAt: string }
 
 interface Ctx {
   state: ErpState;
@@ -39,8 +41,11 @@ interface Ctx {
   saveDoc: (d: Doc) => void;
   removeDoc: (id: string) => void;
   convertQuotation: (id: string) => Doc | null;
+  convertDoc: (id: string, target?: Doc["kind"]) => Doc | null;
   addPayment: (p: Payment) => void;
   nextNumber: (kind: Doc["kind"]) => string;
+  hasSelection: boolean;
+
   loadSampleData: () => Promise<void>;
   wipeData: () => Promise<void>;
   reset: () => void;
@@ -59,7 +64,9 @@ const emptyCompany: Company = {
   id: "", name: "", legalName: "", gstin: "", pan: "", state: "", stateCode: "", address: "",
   phone: "", email: "", website: "", bankName: "", accountNo: "", ifsc: "", upiId: "",
   invoicePrefix: "INV-", quotePrefix: "QTN-", terms: [],
+  country: "India", baseCurrency: "INR", fyStartMonth: 4, industry: "", trialEndsAt: "",
 };
+
 
 const emptyState: ErpState = {
   company: emptyCompany, role: "ADMIN", parties: [], products: [], docs: [], payments: [],
@@ -70,6 +77,8 @@ export function ErpProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState<CompanyRef[]>([]);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [hasSelection, setHasSelection] = useState(false);
+
   const [state, setState] = useState<ErpState>(emptyState);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [draft, setDraft] = useState<{ partyId?: string; items: DocItem[] } | null>(null);
@@ -115,19 +124,30 @@ export function ErpProvider({ children }: { children: ReactNode }) {
     }
     const { data, error } = await supabase
       .from("company_members")
-      .select("role, company_id, companies(id, name)")
+      .select("role, company_id, companies(id, name, gstin, trial_ends_at)")
       .eq("user_id", user.id);
     if (error) { toast.error(error.message); setLoading(false); return; }
     const list: CompanyRef[] = (data ?? [])
       .filter((m) => m.companies)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((m) => ({ id: (m.companies as any).id, name: (m.companies as any).name, role: m.role as Role }));
+      .map((m) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const c = m.companies as any;
+        return {
+          id: c.id, name: c.name, role: m.role as Role,
+          gstin: c.gstin ?? "", trialEndsAt: c.trial_ends_at ?? "",
+        };
+      });
     setCompanies(list);
     const stored = typeof localStorage !== "undefined" ? localStorage.getItem(COMPANY_KEY) : null;
-    const pick = list.find((c) => c.id === stored)?.id ?? list[0]?.id ?? null;
+    const storedValid = list.find((c) => c.id === stored)?.id ?? null;
+    // Only auto-select when the user has exactly one workspace; otherwise let
+    // the organization picker decide.
+    const pick = storedValid ?? (list.length === 1 ? (list[0]?.id ?? null) : null);
+    setHasSelection(!!pick);
     setCompanyId(pick);
     if (!pick) { setState(emptyState); setLoading(false); }
   }, [user]);
+
 
   useEffect(() => { void loadCompanies(); }, [loadCompanies]);
 
@@ -160,8 +180,10 @@ export function ErpProvider({ children }: { children: ReactNode }) {
 
   const switchCompany = useCallback((id: string) => {
     localStorage.setItem(COMPANY_KEY, id);
+    setHasSelection(true);
     setCompanyId(id);
   }, []);
+
 
   const createCompany = useCallback(
     async (name: string, patch?: Partial<Company>) => {
@@ -203,15 +225,21 @@ export function ErpProvider({ children }: { children: ReactNode }) {
   );
   const nextNumber = useCallback(
     (kind: Doc["kind"]) => {
-      const prefix = kind === "INVOICE" ? state.company.invoicePrefix : state.company.quotePrefix;
+      const prefix =
+        kind === "INVOICE"
+          ? state.company.invoicePrefix || "INV-"
+          : kind === "QUOTATION"
+            ? state.company.quotePrefix || "QTN-"
+            : metaOf(kind).prefix;
       const nums = state.docs
         .filter((d) => d.kind === kind)
-        .map((d) => parseInt(d.number.replace(/\D/g, "").slice(-4), 10) || 0);
+        .map((d) => parseInt(d.number.replace(/\D/g, "").slice(-5), 10) || 0);
       const next = (nums.length ? Math.max(...nums) : 0) + 1;
-      return `${prefix}${String(next).padStart(4, "0")}`;
+      return `${prefix}${String(next).padStart(5, "0")}`;
     },
     [state.docs, state.company],
   );
+
 
   const can = useCallback((...roles: Role[]) => roles.includes(state.role), [state.role]);
 
@@ -364,45 +392,52 @@ export function ErpProvider({ children }: { children: ReactNode }) {
     [state.docs, logAudit],
   );
 
-  const convertQuotation = useCallback(
-    (id: string) => {
+  const convertDoc = useCallback(
+    (id: string, target?: Doc["kind"]) => {
       const q = state.docs.find((d) => d.id === id);
       if (!q || !companyId) return null;
+      const to = target ?? metaOf(q.kind).convertTo;
+      if (!to) return null;
       const inv: Doc = {
         ...q,
         id: uid(),
         companyId,
-        kind: "INVOICE",
-        number: nextNumber("INVOICE"),
+        kind: to,
+        number: nextNumber(to),
         date: new Date().toISOString().slice(0, 10),
         dueDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
         status: "UNPAID",
       };
+
       delete inv.convertedTo;
       const updatedQ: Doc = { ...q, status: "ACCEPTED", convertedTo: inv.id };
       const changed: Product[] = [];
+      const sign = to === "BILL" ? 1 : -1;
       setState((s) => ({
         ...s,
         docs: [inv, ...s.docs.map((d) => (d.id === id ? updatedQ : d))],
         products: s.products.map((p) => {
           const it = inv.items.find((i) => i.productId === p.id);
           if (!it) return p;
-          const next = { ...p, stock: p.stock - it.qty };
+          const next = { ...p, stock: p.stock + sign * it.qty };
           changed.push(next);
           return next;
         }),
       }));
       void (async () => {
         const { error } = await supabase.from("docs").insert(fromDoc(inv));
-        if (fail(error, "Convert quotation")) return;
+        if (fail(error, "Convert document")) return;
         await supabase.from("docs").update({ status: "ACCEPTED", converted_to: inv.id }).eq("id", id);
         await persistStock(changed);
-        await logAudit("CONVERT", "INVOICE", inv.id, `${q.number} → ${inv.number}`);
+        await logAudit("CONVERT", to, inv.id, `${q.number} → ${inv.number}`);
       })();
       return inv;
     },
     [state.docs, companyId, nextNumber, logAudit, persistStock],
   );
+
+  const convertQuotation = useCallback((id: string) => convertDoc(id, "INVOICE"), [convertDoc]);
+
 
   const addPayment = useCallback(
     (p: Payment) => {
@@ -481,23 +516,24 @@ export function ErpProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Ctx>(
     () => ({
-      state, user, loading, companies, companyId, audit,
+      state, user, loading, companies, companyId, audit, hasSelection,
       switchCompany, createCompany, signOut, can,
       refresh: loadData,
       draft, setDraft, totalOf, invoiceBalance, outstandingFor, nextNumber,
       setRole: () => toast.info("Your role is managed by the company admin."),
       updateCompany, upsertParty, removeParty, upsertProduct, removeProduct,
       bulkUpsertParties, bulkUpsertProducts,
-      saveDoc, removeDoc, convertQuotation, addPayment,
+      saveDoc, removeDoc, convertQuotation, convertDoc, addPayment,
       loadSampleData, wipeData,
       reset: () => void loadData(),
     }),
     [
-      state, user, loading, companies, companyId, audit, switchCompany, createCompany, signOut, can,
+      state, user, loading, companies, companyId, audit, hasSelection, switchCompany, createCompany, signOut, can,
       loadData, draft, totalOf, invoiceBalance, outstandingFor, nextNumber, updateCompany, upsertParty,
       removeParty, upsertProduct, removeProduct, bulkUpsertParties, bulkUpsertProducts, saveDoc, removeDoc,
-      convertQuotation, addPayment, loadSampleData, wipeData,
+      convertQuotation, convertDoc, addPayment, loadSampleData, wipeData,
     ],
+
   );
 
   return <ErpContext.Provider value={value}>{children}</ErpContext.Provider>;
