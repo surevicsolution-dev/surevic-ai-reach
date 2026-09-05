@@ -516,23 +516,24 @@ export function ErpProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Ctx>(
     () => ({
-      state, user, loading, companies, companyId, audit,
+      state, user, loading, companies, companyId, audit, hasSelection,
       switchCompany, createCompany, signOut, can,
       refresh: loadData,
       draft, setDraft, totalOf, invoiceBalance, outstandingFor, nextNumber,
       setRole: () => toast.info("Your role is managed by the company admin."),
       updateCompany, upsertParty, removeParty, upsertProduct, removeProduct,
       bulkUpsertParties, bulkUpsertProducts,
-      saveDoc, removeDoc, convertQuotation, addPayment,
+      saveDoc, removeDoc, convertQuotation, convertDoc, addPayment,
       loadSampleData, wipeData,
       reset: () => void loadData(),
     }),
     [
-      state, user, loading, companies, companyId, audit, switchCompany, createCompany, signOut, can,
+      state, user, loading, companies, companyId, audit, hasSelection, switchCompany, createCompany, signOut, can,
       loadData, draft, totalOf, invoiceBalance, outstandingFor, nextNumber, updateCompany, upsertParty,
       removeParty, upsertProduct, removeProduct, bulkUpsertParties, bulkUpsertProducts, saveDoc, removeDoc,
-      convertQuotation, addPayment, loadSampleData, wipeData,
+      convertQuotation, convertDoc, addPayment, loadSampleData, wipeData,
     ],
+
   );
 
   return <ErpContext.Provider value={value}>{children}</ErpContext.Provider>;
