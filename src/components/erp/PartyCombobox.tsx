@@ -98,14 +98,15 @@ export function PartyCombobox({
             <CommandList className="max-h-[320px]">
               <CommandEmpty>
                 <div className="space-y-2 py-4 text-center">
-                  <p className="text-sm text-muted-foreground">No customer matched “{query}”.</p>
+                  <p className="text-sm text-muted-foreground">No {entityLabel.toLowerCase()} matched “{query}”.</p>
                   {allowQuickAdd && (
                     <Button size="sm" onClick={() => { setOpen(false); setAddOpen(true); }}>
-                      <Plus className="size-3.5" /> Quick Add Customer
+                      <Plus className="size-3.5" /> Quick Add {entityLabel}
                     </Button>
                   )}
                 </div>
               </CommandEmpty>
+
               <CommandGroup>
                 {filtered.map((p) => (
                   <CommandItem key={p.id} value={p.id} onSelect={() => pick(p)} className="items-start gap-2">
