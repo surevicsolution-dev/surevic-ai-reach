@@ -80,7 +80,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
       date,
       partyId,
       items,
-      status: existing?.status ?? (kind === "INVOICE" ? "UNPAID" : "DRAFT"),
+      status: existing?.status ?? (dated ? "UNPAID" : "DRAFT"),
       ...(dueDate ? { dueDate } : {}),
       ...(poRef ? { poRef } : {}),
       ...(notes ? { notes } : {}),
@@ -88,7 +88,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
     };
     saveDoc(doc);
     setDraft(null);
-    toast.success(`${kind === "INVOICE" ? "Tax invoice" : "Quotation"} ${number} saved`);
+    toast.success(`${meta.label} ${number} saved`);
     navigate({ to: "/doc/$docId", params: { docId: doc.id } });
   };
 
@@ -96,11 +96,17 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         <section className="panel p-4">
-          <h2 className="mb-3 text-sm font-semibold">{kind === "INVOICE" ? "Tax Invoice" : "Quotation"} details</h2>
+          <h2 className="mb-3 text-sm font-semibold">{meta.label} details</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Label>Party</Label>
-              <PartyCombobox value={partyId} onChange={setPartyId} placeholder="Search customer by name, GSTIN, phone…" />
+              <Label>{meta.partyLabel}</Label>
+              <PartyCombobox
+                value={partyId}
+                onChange={setPartyId}
+                types={meta.partyKinds}
+                entityLabel={meta.partyLabel}
+                placeholder={`Search ${meta.partyLabel.toLowerCase()} by name, GSTIN, phone…`}
+              />
               {party && (
                 <div className="mt-2 rounded-md border bg-muted/40 p-2 text-[11px] text-muted-foreground">
                   <p className="font-medium text-foreground">{party.name}</p>
@@ -112,13 +118,14 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
             </div>
             <div><Label>Document No.</Label><Input value={number} onChange={(e) => setNumber(e.target.value)} /></div>
             <div><Label>Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
-            {kind === "INVOICE" && (
+            {dated && (
               <>
                 <div><Label>Due Date</Label><Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} /></div>
                 <div><Label>Follow-up Date</Label><Input type="date" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} /></div>
               </>
             )}
-            <div><Label>Customer PO Ref</Label><Input value={poRef} onChange={(e) => setPoRef(e.target.value)} /></div>
+            <div><Label>{meta.partyLabel} PO Ref</Label><Input value={poRef} onChange={(e) => setPoRef(e.target.value)} /></div>
+
             <div className="sm:col-span-2"><Label>Notes</Label><Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
           </div>
         </section>
