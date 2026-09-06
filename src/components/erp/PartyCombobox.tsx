@@ -130,6 +130,8 @@ export function PartyCombobox({
         open={addOpen}
         onOpenChange={setAddOpen}
         initialName={query}
+        entityLabel={entityLabel}
+        defaultType={types?.length && !types.includes("CUSTOMER") ? "SUPPLIER" : "CUSTOMER"}
         onCreate={(p) => {
           upsertParty(p);
           onChange(p.id, p);
@@ -137,6 +139,7 @@ export function PartyCombobox({
         }}
         companyId={state.company.id}
       />
+
     </>
   );
 }
