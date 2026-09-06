@@ -12,6 +12,7 @@ import { ItemCombobox } from "@/components/erp/ItemCombobox";
 import { Switch } from "@/components/ui/switch";
 import { useErp, uid } from "@/lib/erp/store";
 import { computeTotals, inr, lineMath } from "@/lib/erp/gst";
+import { metaOf } from "@/lib/erp/doc-kinds";
 import type { Doc, DocItem, Product } from "@/lib/erp/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -20,18 +21,21 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
   const { state, saveDoc, nextNumber, draft, setDraft } = useErp();
   const navigate = useNavigate();
   const existing = state.docs.find((d) => d.id === docId);
+  const meta = metaOf(kind);
+  const dated = kind === "INVOICE" || kind === "BILL";
 
   const [partyId, setPartyId] = useState(existing?.partyId ?? draft?.partyId ?? "");
   const [number, setNumber] = useState(existing?.number ?? nextNumber(kind));
   const [date, setDate] = useState(existing?.date ?? today());
   const [dueDate, setDueDate] = useState(
-    existing?.dueDate ?? (kind === "INVOICE" ? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10) : ""),
+    existing?.dueDate ?? (dated ? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10) : ""),
   );
   const [poRef, setPoRef] = useState(existing?.poRef ?? "");
   const [notes, setNotes] = useState(existing?.notes ?? "");
   const [followUpDate, setFollowUpDate] = useState(existing?.followUpDate ?? "");
   const [allowNegative, setAllowNegative] = useState(false);
   const [items, setItems] = useState<DocItem[]>(existing?.items ?? draft?.items ?? []);
+
 
   const party = state.parties.find((p) => p.id === partyId);
   const totals = useMemo(() => computeTotals(items, state.company, party), [items, state.company, party]);
