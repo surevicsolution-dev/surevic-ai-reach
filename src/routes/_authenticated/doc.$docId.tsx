@@ -6,6 +6,8 @@ import { PrintSheet } from "@/components/erp/PrintSheet";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/erp/StatusBadge";
 import { inr } from "@/lib/erp/gst";
+import { metaOf } from "@/lib/erp/doc-kinds";
+
 
 export const Route = createFileRoute("/_authenticated/doc/$docId")({
   head: () => ({
@@ -21,39 +23,41 @@ export const Route = createFileRoute("/_authenticated/doc/$docId")({
 
 function DocView() {
   const { docId } = Route.useParams();
-  const { state, invoiceBalance, convertQuotation } = useErp();
+  const { state, invoiceBalance, convertDoc } = useErp();
   const navigate = useNavigate();
   const doc = state.docs.find((d) => d.id === docId);
 
   if (!doc) return <p className="text-sm text-muted-foreground">Document not found.</p>;
   const party = state.parties.find((p) => p.id === doc.partyId);
+  const meta = metaOf(doc.kind);
 
   return (
     <div className="space-y-4">
       <div className="no-print flex flex-wrap items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={() => navigate({ to: doc.kind === "INVOICE" ? "/invoices" : "/quotations" })}>
-          <ArrowLeft className="size-4" /> Back
+        <Button variant="ghost" size="sm" onClick={() => navigate({ to: meta.listPath as "/invoices" })}>
+          <ArrowLeft className="size-4" /> Back to {meta.plural.toLowerCase()}
         </Button>
         <StatusBadge status={doc.status} />
-        {doc.kind === "INVOICE" && (
+        {(doc.kind === "INVOICE" || doc.kind === "BILL") && (
           <span className="text-xs text-muted-foreground">Balance due: <b className="tabular">{inr(Math.max(0, invoiceBalance(doc)))}</b></span>
         )}
         <div className="ml-auto flex flex-wrap gap-2">
-          {doc.kind === "QUOTATION" && !doc.convertedTo && (
+          {meta.convertTo && !doc.convertedTo && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                const inv = convertQuotation(doc.id);
-                if (inv) {
-                  toast.success(`Converted to ${inv.number}`);
-                  navigate({ to: "/doc/$docId", params: { docId: inv.id } });
+                const next = convertDoc(doc.id);
+                if (next) {
+                  toast.success(`Converted to ${next.number}`);
+                  navigate({ to: "/doc/$docId", params: { docId: next.id } });
                 }
               }}
             >
-              <ArrowRightLeft className="size-4" /> Convert to invoice
+              <ArrowRightLeft className="size-4" /> {meta.convertLabel}
             </Button>
           )}
+
           <Button variant="outline" size="sm" onClick={() => navigate({ to: "/doc/edit/$docId", params: { docId: doc.id } })}>
             <Pencil className="size-4" /> Edit
           </Button>
