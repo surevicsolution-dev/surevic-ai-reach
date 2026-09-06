@@ -201,7 +201,7 @@ function QuickAddParty({
       }}
     >
       <DialogContent className="sm:max-w-[520px]">
-        <DialogHeader><DialogTitle>Quick add customer</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Quick add {entityLabel.toLowerCase()}</DialogTitle></DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2"><Label>Company name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
           <div>
@@ -220,7 +220,7 @@ function QuickAddParty({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={submit}>Add customer</Button>
+          <Button onClick={submit}>Add {entityLabel.toLowerCase()}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
