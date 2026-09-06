@@ -150,15 +150,20 @@ function QuickAddParty({
   initialName,
   onCreate,
   companyId,
+  entityLabel = "Customer",
+  defaultType = "CUSTOMER",
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   initialName: string;
   onCreate: (p: Party) => void;
   companyId: string;
+  entityLabel?: string;
+  defaultType?: PartyType;
 }) {
   const [name, setName] = useState(initialName);
-  const [type, setType] = useState<PartyType>("CUSTOMER");
+  const [type, setType] = useState<PartyType>(defaultType);
+
   const [gstin, setGstin] = useState("");
   const [stateName, setStateName] = useState("");
   const [stateCode, setStateCode] = useState("");
