@@ -247,11 +247,16 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
         )}
 
         <Button className="w-full" onClick={submit}>
-          <Save className="size-4" /> Save {kind === "INVOICE" ? "invoice" : "quotation"}
+          <Save className="size-4" /> Save {meta.label.toLowerCase()}
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => navigate({ to: kind === "INVOICE" ? "/invoices" : "/quotations" })}>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => navigate({ to: meta.listPath as "/invoices" })}
+        >
           Cancel
         </Button>
+
         <p className="text-center text-[11px] text-muted-foreground">
           <Plus className="mr-1 inline size-3" />Alt+N new invoice · Alt+Q new quotation
         </p>
