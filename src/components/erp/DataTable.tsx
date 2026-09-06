@@ -27,7 +27,7 @@ export function DataTable<T>({
   pageSize?: number;
   onRowClick?: (row: T) => void;
   toolbar?: ReactNode;
-  empty?: string;
+  empty?: ReactNode;
 }) {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(0);
