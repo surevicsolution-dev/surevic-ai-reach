@@ -24,12 +24,16 @@ export function PartyCombobox({
   placeholder = "Search customer by name, GSTIN, phone…",
   className,
   allowQuickAdd = true,
+  types,
+  entityLabel = "Customer",
 }: {
   value: string;
   onChange: (id: string, party: Party) => void;
   placeholder?: string;
   className?: string;
   allowQuickAdd?: boolean;
+  types?: PartyType[];
+  entityLabel?: string;
 }) {
   const { state, upsertParty } = useErp();
   const [open, setOpen] = useState(false);
@@ -37,7 +41,10 @@ export function PartyCombobox({
   const [addOpen, setAddOpen] = useState(false);
 
   const selected = state.parties.find((p) => p.id === value);
-  const parties = state.parties;
+  const parties = useMemo(
+    () => (types?.length ? state.parties.filter((p) => types.includes(p.type)) : state.parties),
+    [state.parties, types],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -48,6 +55,7 @@ export function PartyCombobox({
       )
       .slice(0, 50);
   }, [parties, query]);
+
 
   const pick = (p: Party) => {
     onChange(p.id, p);
