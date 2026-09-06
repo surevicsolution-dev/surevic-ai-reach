@@ -15,13 +15,17 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/bills'
 import { Route as AuthenticatedFollowupsRouteImport } from './routes/_authenticated/followups'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedLedgerRouteImport } from './routes/_authenticated/ledger'
 import { Route as AuthenticatedPartiesRouteImport } from './routes/_authenticated/parties'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as AuthenticatedProformaInvoicesRouteImport } from './routes/_authenticated/proforma-invoices'
+import { Route as AuthenticatedPurchaseOrdersRouteImport } from './routes/_authenticated/purchase-orders'
 import { Route as AuthenticatedQuotationsRouteImport } from './routes/_authenticated/quotations'
+import { Route as AuthenticatedSalesOrdersRouteImport } from './routes/_authenticated/sales-orders'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedDocDocIdRouteImport } from './routes/_authenticated/doc.$docId'
@@ -57,6 +61,11 @@ const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBillsRoute = AuthenticatedBillsRouteImport.update({
+  id: '/bills',
+  path: '/bills',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFollowupsRoute = AuthenticatedFollowupsRouteImport.update({
   id: '/followups',
   path: '/followups',
@@ -87,11 +96,29 @@ const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProformaInvoicesRoute =
+  AuthenticatedProformaInvoicesRouteImport.update({
+    id: '/proforma-invoices',
+    path: '/proforma-invoices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPurchaseOrdersRoute =
+  AuthenticatedPurchaseOrdersRouteImport.update({
+    id: '/purchase-orders',
+    path: '/purchase-orders',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedQuotationsRoute = AuthenticatedQuotationsRouteImport.update({
   id: '/quotations',
   path: '/quotations',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSalesOrdersRoute =
+  AuthenticatedSalesOrdersRouteImport.update({
+    id: '/sales-orders',
+    path: '/sales-orders',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -125,13 +152,17 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/bills': typeof AuthenticatedBillsRoute
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/parties': typeof AuthenticatedPartiesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/proforma-invoices': typeof AuthenticatedProformaInvoicesRoute
+  '/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
+  '/sales-orders': typeof AuthenticatedSalesOrdersRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
@@ -143,13 +174,17 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/bills': typeof AuthenticatedBillsRoute
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/parties': typeof AuthenticatedPartiesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/proforma-invoices': typeof AuthenticatedProformaInvoicesRoute
+  '/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
+  '/sales-orders': typeof AuthenticatedSalesOrdersRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -164,13 +199,17 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
+  '/_authenticated/bills': typeof AuthenticatedBillsRoute
   '/_authenticated/followups': typeof AuthenticatedFollowupsRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
   '/_authenticated/parties': typeof AuthenticatedPartiesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/_authenticated/proforma-invoices': typeof AuthenticatedProformaInvoicesRoute
+  '/_authenticated/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/_authenticated/quotations': typeof AuthenticatedQuotationsRoute
+  '/_authenticated/sales-orders': typeof AuthenticatedSalesOrdersRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -186,13 +225,17 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/audit'
+    | '/bills'
     | '/followups'
     | '/invoices'
     | '/ledger'
     | '/parties'
     | '/payments'
     | '/products'
+    | '/proforma-invoices'
+    | '/purchase-orders'
     | '/quotations'
+    | '/sales-orders'
     | '/settings'
     | '/admin/users'
     | '/doc/$docId'
@@ -204,13 +247,17 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/audit'
+    | '/bills'
     | '/followups'
     | '/invoices'
     | '/ledger'
     | '/parties'
     | '/payments'
     | '/products'
+    | '/proforma-invoices'
+    | '/purchase-orders'
     | '/quotations'
+    | '/sales-orders'
     | '/settings'
     | '/'
     | '/admin/users'
@@ -224,13 +271,17 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_authenticated/audit'
+    | '/_authenticated/bills'
     | '/_authenticated/followups'
     | '/_authenticated/invoices'
     | '/_authenticated/ledger'
     | '/_authenticated/parties'
     | '/_authenticated/payments'
     | '/_authenticated/products'
+    | '/_authenticated/proforma-invoices'
+    | '/_authenticated/purchase-orders'
     | '/_authenticated/quotations'
+    | '/_authenticated/sales-orders'
     | '/_authenticated/settings'
     | '/_authenticated/'
     | '/_authenticated/admin/users'
@@ -290,6 +341,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/bills': {
+      id: '/_authenticated/bills'
+      path: '/bills'
+      fullPath: '/bills'
+      preLoaderRoute: typeof AuthenticatedBillsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/followups': {
       id: '/_authenticated/followups'
       path: '/followups'
@@ -332,11 +390,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProductsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/proforma-invoices': {
+      id: '/_authenticated/proforma-invoices'
+      path: '/proforma-invoices'
+      fullPath: '/proforma-invoices'
+      preLoaderRoute: typeof AuthenticatedProformaInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/purchase-orders': {
+      id: '/_authenticated/purchase-orders'
+      path: '/purchase-orders'
+      fullPath: '/purchase-orders'
+      preLoaderRoute: typeof AuthenticatedPurchaseOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/quotations': {
       id: '/_authenticated/quotations'
       path: '/quotations'
       fullPath: '/quotations'
       preLoaderRoute: typeof AuthenticatedQuotationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sales-orders': {
+      id: '/_authenticated/sales-orders'
+      path: '/sales-orders'
+      fullPath: '/sales-orders'
+      preLoaderRoute: typeof AuthenticatedSalesOrdersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -379,13 +458,17 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
+  AuthenticatedBillsRoute: typeof AuthenticatedBillsRoute
   AuthenticatedFollowupsRoute: typeof AuthenticatedFollowupsRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLedgerRoute: typeof AuthenticatedLedgerRoute
   AuthenticatedPartiesRoute: typeof AuthenticatedPartiesRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
+  AuthenticatedProformaInvoicesRoute: typeof AuthenticatedProformaInvoicesRoute
+  AuthenticatedPurchaseOrdersRoute: typeof AuthenticatedPurchaseOrdersRoute
   AuthenticatedQuotationsRoute: typeof AuthenticatedQuotationsRoute
+  AuthenticatedSalesOrdersRoute: typeof AuthenticatedSalesOrdersRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -396,13 +479,17 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
+  AuthenticatedBillsRoute: AuthenticatedBillsRoute,
   AuthenticatedFollowupsRoute: AuthenticatedFollowupsRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLedgerRoute: AuthenticatedLedgerRoute,
   AuthenticatedPartiesRoute: AuthenticatedPartiesRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
+  AuthenticatedProformaInvoicesRoute: AuthenticatedProformaInvoicesRoute,
+  AuthenticatedPurchaseOrdersRoute: AuthenticatedPurchaseOrdersRoute,
   AuthenticatedQuotationsRoute: AuthenticatedQuotationsRoute,
+  AuthenticatedSalesOrdersRoute: AuthenticatedSalesOrdersRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,

@@ -12,6 +12,7 @@ import { ItemCombobox } from "@/components/erp/ItemCombobox";
 import { Switch } from "@/components/ui/switch";
 import { useErp, uid } from "@/lib/erp/store";
 import { computeTotals, inr, lineMath } from "@/lib/erp/gst";
+import { metaOf } from "@/lib/erp/doc-kinds";
 import type { Doc, DocItem, Product } from "@/lib/erp/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -20,18 +21,21 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
   const { state, saveDoc, nextNumber, draft, setDraft } = useErp();
   const navigate = useNavigate();
   const existing = state.docs.find((d) => d.id === docId);
+  const meta = metaOf(kind);
+  const dated = kind === "INVOICE" || kind === "BILL";
 
   const [partyId, setPartyId] = useState(existing?.partyId ?? draft?.partyId ?? "");
   const [number, setNumber] = useState(existing?.number ?? nextNumber(kind));
   const [date, setDate] = useState(existing?.date ?? today());
   const [dueDate, setDueDate] = useState(
-    existing?.dueDate ?? (kind === "INVOICE" ? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10) : ""),
+    existing?.dueDate ?? (dated ? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10) : ""),
   );
   const [poRef, setPoRef] = useState(existing?.poRef ?? "");
   const [notes, setNotes] = useState(existing?.notes ?? "");
   const [followUpDate, setFollowUpDate] = useState(existing?.followUpDate ?? "");
   const [allowNegative, setAllowNegative] = useState(false);
   const [items, setItems] = useState<DocItem[]>(existing?.items ?? draft?.items ?? []);
+
 
   const party = state.parties.find((p) => p.id === partyId);
   const totals = useMemo(() => computeTotals(items, state.company, party), [items, state.company, party]);
@@ -76,7 +80,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
       date,
       partyId,
       items,
-      status: existing?.status ?? (kind === "INVOICE" ? "UNPAID" : "DRAFT"),
+      status: existing?.status ?? (dated ? "UNPAID" : "DRAFT"),
       ...(dueDate ? { dueDate } : {}),
       ...(poRef ? { poRef } : {}),
       ...(notes ? { notes } : {}),
@@ -84,7 +88,7 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
     };
     saveDoc(doc);
     setDraft(null);
-    toast.success(`${kind === "INVOICE" ? "Tax invoice" : "Quotation"} ${number} saved`);
+    toast.success(`${meta.label} ${number} saved`);
     navigate({ to: "/doc/$docId", params: { docId: doc.id } });
   };
 
@@ -92,11 +96,17 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         <section className="panel p-4">
-          <h2 className="mb-3 text-sm font-semibold">{kind === "INVOICE" ? "Tax Invoice" : "Quotation"} details</h2>
+          <h2 className="mb-3 text-sm font-semibold">{meta.label} details</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Label>Party</Label>
-              <PartyCombobox value={partyId} onChange={setPartyId} placeholder="Search customer by name, GSTIN, phone…" />
+              <Label>{meta.partyLabel}</Label>
+              <PartyCombobox
+                value={partyId}
+                onChange={setPartyId}
+                types={meta.partyKinds}
+                entityLabel={meta.partyLabel}
+                placeholder={`Search ${meta.partyLabel.toLowerCase()} by name, GSTIN, phone…`}
+              />
               {party && (
                 <div className="mt-2 rounded-md border bg-muted/40 p-2 text-[11px] text-muted-foreground">
                   <p className="font-medium text-foreground">{party.name}</p>
@@ -108,13 +118,14 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
             </div>
             <div><Label>Document No.</Label><Input value={number} onChange={(e) => setNumber(e.target.value)} /></div>
             <div><Label>Date</Label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
-            {kind === "INVOICE" && (
+            {dated && (
               <>
                 <div><Label>Due Date</Label><Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} /></div>
                 <div><Label>Follow-up Date</Label><Input type="date" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} /></div>
               </>
             )}
-            <div><Label>Customer PO Ref</Label><Input value={poRef} onChange={(e) => setPoRef(e.target.value)} /></div>
+            <div><Label>{meta.partyLabel} PO Ref</Label><Input value={poRef} onChange={(e) => setPoRef(e.target.value)} /></div>
+
             <div className="sm:col-span-2"><Label>Notes</Label><Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
           </div>
         </section>
@@ -236,11 +247,16 @@ export function DocEditor({ kind, docId }: { kind: Doc["kind"]; docId?: string }
         )}
 
         <Button className="w-full" onClick={submit}>
-          <Save className="size-4" /> Save {kind === "INVOICE" ? "invoice" : "quotation"}
+          <Save className="size-4" /> Save {meta.label.toLowerCase()}
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => navigate({ to: kind === "INVOICE" ? "/invoices" : "/quotations" })}>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => navigate({ to: meta.listPath as "/invoices" })}
+        >
           Cancel
         </Button>
+
         <p className="text-center text-[11px] text-muted-foreground">
           <Plus className="mr-1 inline size-3" />Alt+N new invoice · Alt+Q new quotation
         </p>

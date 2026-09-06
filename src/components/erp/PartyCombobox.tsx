@@ -24,12 +24,16 @@ export function PartyCombobox({
   placeholder = "Search customer by name, GSTIN, phone…",
   className,
   allowQuickAdd = true,
+  types,
+  entityLabel = "Customer",
 }: {
   value: string;
   onChange: (id: string, party: Party) => void;
   placeholder?: string;
   className?: string;
   allowQuickAdd?: boolean;
+  types?: PartyType[];
+  entityLabel?: string;
 }) {
   const { state, upsertParty } = useErp();
   const [open, setOpen] = useState(false);
@@ -37,7 +41,10 @@ export function PartyCombobox({
   const [addOpen, setAddOpen] = useState(false);
 
   const selected = state.parties.find((p) => p.id === value);
-  const parties = state.parties;
+  const parties = useMemo(
+    () => (types?.length ? state.parties.filter((p) => types.includes(p.type)) : state.parties),
+    [state.parties, types],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -48,6 +55,7 @@ export function PartyCombobox({
       )
       .slice(0, 50);
   }, [parties, query]);
+
 
   const pick = (p: Party) => {
     onChange(p.id, p);
@@ -90,14 +98,15 @@ export function PartyCombobox({
             <CommandList className="max-h-[320px]">
               <CommandEmpty>
                 <div className="space-y-2 py-4 text-center">
-                  <p className="text-sm text-muted-foreground">No customer matched “{query}”.</p>
+                  <p className="text-sm text-muted-foreground">No {entityLabel.toLowerCase()} matched “{query}”.</p>
                   {allowQuickAdd && (
                     <Button size="sm" onClick={() => { setOpen(false); setAddOpen(true); }}>
-                      <Plus className="size-3.5" /> Quick Add Customer
+                      <Plus className="size-3.5" /> Quick Add {entityLabel}
                     </Button>
                   )}
                 </div>
               </CommandEmpty>
+
               <CommandGroup>
                 {filtered.map((p) => (
                   <CommandItem key={p.id} value={p.id} onSelect={() => pick(p)} className="items-start gap-2">
@@ -121,6 +130,8 @@ export function PartyCombobox({
         open={addOpen}
         onOpenChange={setAddOpen}
         initialName={query}
+        entityLabel={entityLabel}
+        defaultType={types?.length && !types.includes("CUSTOMER") ? "SUPPLIER" : "CUSTOMER"}
         onCreate={(p) => {
           upsertParty(p);
           onChange(p.id, p);
@@ -128,6 +139,7 @@ export function PartyCombobox({
         }}
         companyId={state.company.id}
       />
+
     </>
   );
 }
@@ -138,15 +150,20 @@ function QuickAddParty({
   initialName,
   onCreate,
   companyId,
+  entityLabel = "Customer",
+  defaultType = "CUSTOMER",
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   initialName: string;
   onCreate: (p: Party) => void;
   companyId: string;
+  entityLabel?: string;
+  defaultType?: PartyType;
 }) {
   const [name, setName] = useState(initialName);
-  const [type, setType] = useState<PartyType>("CUSTOMER");
+  const [type, setType] = useState<PartyType>(defaultType);
+
   const [gstin, setGstin] = useState("");
   const [stateName, setStateName] = useState("");
   const [stateCode, setStateCode] = useState("");
@@ -184,7 +201,7 @@ function QuickAddParty({
       }}
     >
       <DialogContent className="sm:max-w-[520px]">
-        <DialogHeader><DialogTitle>Quick add customer</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Quick add {entityLabel.toLowerCase()}</DialogTitle></DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2"><Label>Company name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
           <div>
@@ -203,7 +220,7 @@ function QuickAddParty({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={submit}>Add customer</Button>
+          <Button onClick={submit}>Add {entityLabel.toLowerCase()}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
