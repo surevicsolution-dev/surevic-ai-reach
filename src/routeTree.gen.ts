@@ -19,6 +19,7 @@ import { Route as AuthenticatedBillsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedFollowupsRouteImport } from './routes/_authenticated/followups'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedLedgerRouteImport } from './routes/_authenticated/ledger'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedPartiesRouteImport } from './routes/_authenticated/parties'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
@@ -26,6 +27,7 @@ import { Route as AuthenticatedProformaInvoicesRouteImport } from './routes/_aut
 import { Route as AuthenticatedPurchaseOrdersRouteImport } from './routes/_authenticated/purchase-orders'
 import { Route as AuthenticatedQuotationsRouteImport } from './routes/_authenticated/quotations'
 import { Route as AuthenticatedSalesOrdersRouteImport } from './routes/_authenticated/sales-orders'
+import { Route as AuthenticatedSelectOrganizationRouteImport } from './routes/_authenticated/select-organization'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedDocDocIdRouteImport } from './routes/_authenticated/doc.$docId'
@@ -81,6 +83,11 @@ const AuthenticatedLedgerRoute = AuthenticatedLedgerRouteImport.update({
   path: '/ledger',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPartiesRoute = AuthenticatedPartiesRouteImport.update({
   id: '/parties',
   path: '/parties',
@@ -117,6 +124,12 @@ const AuthenticatedSalesOrdersRoute =
   AuthenticatedSalesOrdersRouteImport.update({
     id: '/sales-orders',
     path: '/sales-orders',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSelectOrganizationRoute =
+  AuthenticatedSelectOrganizationRouteImport.update({
+    id: '/select-organization',
+    path: '/select-organization',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -156,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/parties': typeof AuthenticatedPartiesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/products': typeof AuthenticatedProductsRoute
@@ -163,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/sales-orders': typeof AuthenticatedSalesOrdersRoute
+  '/select-organization': typeof AuthenticatedSelectOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/doc/$docId': typeof AuthenticatedDocDocIdRoute
@@ -178,6 +193,7 @@ export interface FileRoutesByTo {
   '/followups': typeof AuthenticatedFollowupsRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/ledger': typeof AuthenticatedLedgerRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/parties': typeof AuthenticatedPartiesRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/products': typeof AuthenticatedProductsRoute
@@ -185,6 +201,7 @@ export interface FileRoutesByTo {
   '/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/quotations': typeof AuthenticatedQuotationsRoute
   '/sales-orders': typeof AuthenticatedSalesOrdersRoute
+  '/select-organization': typeof AuthenticatedSelectOrganizationRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -203,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/followups': typeof AuthenticatedFollowupsRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/parties': typeof AuthenticatedPartiesRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
@@ -210,6 +228,7 @@ export interface FileRoutesById {
   '/_authenticated/purchase-orders': typeof AuthenticatedPurchaseOrdersRoute
   '/_authenticated/quotations': typeof AuthenticatedQuotationsRoute
   '/_authenticated/sales-orders': typeof AuthenticatedSalesOrdersRoute
+  '/_authenticated/select-organization': typeof AuthenticatedSelectOrganizationRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -229,6 +248,7 @@ export interface FileRouteTypes {
     | '/followups'
     | '/invoices'
     | '/ledger'
+    | '/onboarding'
     | '/parties'
     | '/payments'
     | '/products'
@@ -236,6 +256,7 @@ export interface FileRouteTypes {
     | '/purchase-orders'
     | '/quotations'
     | '/sales-orders'
+    | '/select-organization'
     | '/settings'
     | '/admin/users'
     | '/doc/$docId'
@@ -251,6 +272,7 @@ export interface FileRouteTypes {
     | '/followups'
     | '/invoices'
     | '/ledger'
+    | '/onboarding'
     | '/parties'
     | '/payments'
     | '/products'
@@ -258,6 +280,7 @@ export interface FileRouteTypes {
     | '/purchase-orders'
     | '/quotations'
     | '/sales-orders'
+    | '/select-organization'
     | '/settings'
     | '/'
     | '/admin/users'
@@ -275,6 +298,7 @@ export interface FileRouteTypes {
     | '/_authenticated/followups'
     | '/_authenticated/invoices'
     | '/_authenticated/ledger'
+    | '/_authenticated/onboarding'
     | '/_authenticated/parties'
     | '/_authenticated/payments'
     | '/_authenticated/products'
@@ -282,6 +306,7 @@ export interface FileRouteTypes {
     | '/_authenticated/purchase-orders'
     | '/_authenticated/quotations'
     | '/_authenticated/sales-orders'
+    | '/_authenticated/select-organization'
     | '/_authenticated/settings'
     | '/_authenticated/'
     | '/_authenticated/admin/users'
@@ -369,6 +394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLedgerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/parties': {
       id: '/_authenticated/parties'
       path: '/parties'
@@ -418,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSalesOrdersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/select-organization': {
+      id: '/_authenticated/select-organization'
+      path: '/select-organization'
+      fullPath: '/select-organization'
+      preLoaderRoute: typeof AuthenticatedSelectOrganizationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -462,6 +501,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFollowupsRoute: typeof AuthenticatedFollowupsRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLedgerRoute: typeof AuthenticatedLedgerRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPartiesRoute: typeof AuthenticatedPartiesRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
@@ -469,6 +509,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPurchaseOrdersRoute: typeof AuthenticatedPurchaseOrdersRoute
   AuthenticatedQuotationsRoute: typeof AuthenticatedQuotationsRoute
   AuthenticatedSalesOrdersRoute: typeof AuthenticatedSalesOrdersRoute
+  AuthenticatedSelectOrganizationRoute: typeof AuthenticatedSelectOrganizationRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -483,6 +524,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFollowupsRoute: AuthenticatedFollowupsRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLedgerRoute: AuthenticatedLedgerRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPartiesRoute: AuthenticatedPartiesRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
@@ -490,6 +532,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPurchaseOrdersRoute: AuthenticatedPurchaseOrdersRoute,
   AuthenticatedQuotationsRoute: AuthenticatedQuotationsRoute,
   AuthenticatedSalesOrdersRoute: AuthenticatedSalesOrdersRoute,
+  AuthenticatedSelectOrganizationRoute: AuthenticatedSelectOrganizationRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
