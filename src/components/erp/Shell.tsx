@@ -3,6 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import {
   BarChart3, Boxes, FileText, Users, ReceiptIndianRupee, Wallet,
   BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2, KeyRound,
+  ChevronDown, ClipboardList, ReceiptText, ShoppingCart, Banknote, type LucideIcon,
 } from "lucide-react";
 import { useErp } from "@/lib/erp/store";
 import { Button } from "@/components/ui/button";
@@ -13,19 +14,53 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Copilot } from "./Copilot";
 
-const NAV = [
-  { to: "/", label: "Dashboard", icon: BarChart3 },
-  { to: "/quotations", label: "Quotations", icon: FileText },
-  { to: "/invoices", label: "Tax Invoices", icon: ReceiptIndianRupee },
-  { to: "/payments", label: "Payments", icon: Wallet },
-  { to: "/ledger", label: "Ledgers & Aging", icon: BookOpenCheck },
-  { to: "/followups", label: "Follow-ups", icon: CalendarClock },
-  { to: "/parties", label: "Customers & Suppliers", icon: Users },
-  { to: "/products", label: "Inventory", icon: Boxes },
-  { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
-  { to: "/admin/users", label: "Super Admin", icon: KeyRound },
-  { to: "/settings", label: "Company & RBAC", icon: Settings },
-] as const;
+type NavItem = { to: string; label: string; icon: LucideIcon };
+type NavSection = { label?: string; items: NavItem[] };
+
+const SECTIONS: NavSection[] = [
+  { items: [{ to: "/", label: "Dashboard", icon: BarChart3 }] },
+  {
+    label: "Sales",
+    items: [
+      { to: "/quotations", label: "Quotations", icon: FileText },
+      { to: "/sales-orders", label: "Sales Orders", icon: ClipboardList },
+      { to: "/proforma-invoices", label: "Proforma Invoices", icon: ReceiptText },
+      { to: "/invoices", label: "Tax Invoices", icon: ReceiptIndianRupee },
+    ],
+  },
+  {
+    label: "Purchases",
+    items: [
+      { to: "/purchase-orders", label: "Purchase Orders", icon: ShoppingCart },
+      { to: "/bills", label: "Bills", icon: Banknote },
+    ],
+  },
+  {
+    label: "Money",
+    items: [
+      { to: "/payments", label: "Payments", icon: Wallet },
+      { to: "/ledger", label: "Ledgers & Aging", icon: BookOpenCheck },
+      { to: "/followups", label: "Follow-ups", icon: CalendarClock },
+    ],
+  },
+  {
+    label: "Master Data",
+    items: [
+      { to: "/parties", label: "Customers & Suppliers", icon: Users },
+      { to: "/products", label: "Inventory", icon: Boxes },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
+      { to: "/admin/users", label: "Super Admin", icon: KeyRound },
+      { to: "/settings", label: "Company & RBAC", icon: Settings },
+    ],
+  },
+];
+
+const ALL_NAV = SECTIONS.flatMap((s) => s.items);
 
 export function Shell({ children }: { children: ReactNode }) {
   const { state, user, companies, companyId, switchCompany, signOut } = useErp();
