@@ -1,8 +1,9 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3, Boxes, FileText, Users, ReceiptIndianRupee, Wallet,
   BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2, KeyRound,
+  ChevronDown, ClipboardList, ReceiptText, ShoppingCart, Banknote, type LucideIcon,
 } from "lucide-react";
 import { useErp } from "@/lib/erp/store";
 import { Button } from "@/components/ui/button";
@@ -13,24 +14,59 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Copilot } from "./Copilot";
 
-const NAV = [
-  { to: "/", label: "Dashboard", icon: BarChart3 },
-  { to: "/quotations", label: "Quotations", icon: FileText },
-  { to: "/invoices", label: "Tax Invoices", icon: ReceiptIndianRupee },
-  { to: "/payments", label: "Payments", icon: Wallet },
-  { to: "/ledger", label: "Ledgers & Aging", icon: BookOpenCheck },
-  { to: "/followups", label: "Follow-ups", icon: CalendarClock },
-  { to: "/parties", label: "Customers & Suppliers", icon: Users },
-  { to: "/products", label: "Inventory", icon: Boxes },
-  { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
-  { to: "/admin/users", label: "Super Admin", icon: KeyRound },
-  { to: "/settings", label: "Company & RBAC", icon: Settings },
-] as const;
+type NavItem = { to: string; label: string; icon: LucideIcon };
+type NavSection = { label?: string; items: NavItem[] };
+
+const SECTIONS: NavSection[] = [
+  { items: [{ to: "/", label: "Dashboard", icon: BarChart3 }] },
+  {
+    label: "Sales",
+    items: [
+      { to: "/quotations", label: "Quotations", icon: FileText },
+      { to: "/sales-orders", label: "Sales Orders", icon: ClipboardList },
+      { to: "/proforma-invoices", label: "Proforma Invoices", icon: ReceiptText },
+      { to: "/invoices", label: "Tax Invoices", icon: ReceiptIndianRupee },
+    ],
+  },
+  {
+    label: "Purchases",
+    items: [
+      { to: "/purchase-orders", label: "Purchase Orders", icon: ShoppingCart },
+      { to: "/bills", label: "Bills", icon: Banknote },
+    ],
+  },
+  {
+    label: "Money",
+    items: [
+      { to: "/payments", label: "Payments", icon: Wallet },
+      { to: "/ledger", label: "Ledgers & Aging", icon: BookOpenCheck },
+      { to: "/followups", label: "Follow-ups", icon: CalendarClock },
+    ],
+  },
+  {
+    label: "Master Data",
+    items: [
+      { to: "/parties", label: "Customers & Suppliers", icon: Users },
+      { to: "/products", label: "Inventory", icon: Boxes },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
+      { to: "/admin/users", label: "Super Admin", icon: KeyRound },
+      { to: "/settings", label: "Company & RBAC", icon: Settings },
+    ],
+  },
+];
+
+const ALL_NAV = SECTIONS.flatMap((s) => s.items);
 
 export function Shell({ children }: { children: ReactNode }) {
   const { state, user, companies, companyId, switchCompany, signOut } = useErp();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -61,22 +97,53 @@ export function Shell({ children }: { children: ReactNode }) {
             <p className="text-[11px] text-sidebar-foreground/60">+ AI Copilot</p>
           </div>
         </div>
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
-          {NAV.map((n) => {
-            const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
+        <nav className="flex-1 space-y-3 overflow-y-auto px-3 py-4">
+          {SECTIONS.map((sec) => {
+            const containsActive = sec.items.some((n) =>
+              n.to === "/" ? pathname === "/" : pathname.startsWith(n.to),
+            );
+            const open = !sec.label || containsActive || !collapsed.has(sec.label);
+            const toggle = (label: string) =>
+              setCollapsed((prev) => {
+                const next = new Set(prev);
+                if (next.has(label)) next.delete(label);
+                else next.add(label);
+                return next;
+              });
+
+            const item = (n: NavItem) => {
+              const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
+              return (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                    active
+                      ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                  }`}
+                >
+                  <n.icon className="size-4" />
+                  {n.label}
+                </Link>
+              );
+            };
+
+            const label = sec.label;
+            if (!label) return <div key="dashboard" className="space-y-0.5">{sec.items.map(item)}</div>;
+
             return (
-              <Link
-                key={n.to}
-                to={n.to}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
-                  active
-                    ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
-                }`}
-              >
-                <n.icon className="size-4" />
-                {n.label}
-              </Link>
+              <div key={label}>
+                <button
+                  type="button"
+                  onClick={() => toggle(label)}
+                  className="flex w-full items-center justify-between rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-sidebar-foreground/50 hover:text-sidebar-foreground"
+                >
+                  {sec.label}
+                  <ChevronDown className={`size-3.5 transition-transform ${open ? "" : "-rotate-90"}`} />
+                </button>
+                {open && <div className="mt-0.5 space-y-0.5">{sec.items.map(item)}</div>}
+              </div>
             );
           })}
         </nav>
@@ -90,7 +157,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <header className="no-print sticky top-0 z-30 flex flex-wrap items-center gap-3 border-b bg-card/90 px-4 py-3 backdrop-blur lg:px-6">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">
-              {NAV.find((n) => (n.to === "/" ? pathname === "/" : pathname.startsWith(n.to)))?.label ?? "Surevic ERP"}
+              {ALL_NAV.find((n) => (n.to === "/" ? pathname === "/" : pathname.startsWith(n.to)))?.label ?? "Surevic ERP"}
             </p>
             <p className="text-[11px] text-muted-foreground">
               State {state.company.state || "—"} ({state.company.stateCode || "—"}) · Role {state.role} · Alt+N invoice, Alt+Q quotation
