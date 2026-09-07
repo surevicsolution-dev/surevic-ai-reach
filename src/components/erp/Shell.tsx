@@ -129,13 +129,14 @@ export function Shell({ children }: { children: ReactNode }) {
               );
             };
 
-            if (!sec.label) return <div key="dashboard" className="space-y-0.5">{sec.items.map(item)}</div>;
+            const label = sec.label;
+            if (!label) return <div key="dashboard" className="space-y-0.5">{sec.items.map(item)}</div>;
 
             return (
-              <div key={sec.label}>
+              <div key={label}>
                 <button
                   type="button"
-                  onClick={() => toggle(sec.label)}
+                  onClick={() => toggle(label)}
                   className="flex w-full items-center justify-between rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-sidebar-foreground/50 hover:text-sidebar-foreground"
                 >
                   {sec.label}
