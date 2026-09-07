@@ -3,15 +3,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3, Boxes, FileText, Users, ReceiptIndianRupee, Wallet,
   BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2, KeyRound,
-  ChevronDown, ClipboardList, ReceiptText, ShoppingCart, Banknote, type LucideIcon,
+  ChevronDown, ClipboardList, ReceiptText, ShoppingCart, Banknote, Check, type LucideIcon,
 } from "lucide-react";
 import { useErp } from "@/lib/erp/store";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { trialLabel } from "@/routes/_authenticated/select-organization";
 import { Copilot } from "./Copilot";
 
 type NavItem = { to: string; label: string; icon: LucideIcon };
@@ -53,6 +53,7 @@ const SECTIONS: NavSection[] = [
   {
     label: "Admin",
     items: [
+      { to: "/select-organization", label: "Organizations", icon: Building2 },
       { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
       { to: "/admin/users", label: "Super Admin", icon: KeyRound },
       { to: "/settings", label: "Company & RBAC", icon: Settings },
@@ -164,17 +165,46 @@ export function Shell({ children }: { children: ReactNode }) {
             </p>
           </div>
 
-          <Select value={companyId ?? ""} onValueChange={switchCompany}>
-            <SelectTrigger className="h-9 w-[190px]">
-              <Building2 className="size-4 text-muted-foreground" />
-              <SelectValue placeholder="Company" />
-            </SelectTrigger>
-            <SelectContent>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-9 max-w-[240px] justify-start gap-2">
+                <Building2 className="size-4 text-muted-foreground" />
+                <span className="min-w-0 truncate">{state.company.name || "Select organization"}</span>
+                <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  {state.role}
+                </span>
+                <ChevronDown className="size-3.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-72">
+              <DropdownMenuLabel className="flex items-center justify-between text-xs">
+                Organizations
+                <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                  {trialLabel(companies.find((c) => c.id === companyId)?.trialEndsAt)}
+                </span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
               {companies.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                <DropdownMenuItem key={c.id} onClick={() => switchCompany(c.id)} className="items-start gap-2">
+                  <Building2 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-xs font-medium">{c.name}</span>
+                    <span className="tabular block text-[10px] text-muted-foreground">
+                      {c.role} · GSTIN {c.gstin || "—"}
+                    </span>
+                  </span>
+                  {c.id === companyId && <Check className="size-4 text-primary" />}
+                </DropdownMenuItem>
               ))}
-            </SelectContent>
-          </Select>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate({ to: "/select-organization" })}>
+                <Building2 className="size-4" /> Manage organizations
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ to: "/onboarding" })}>
+                <Plus className="size-4" /> Add new organization
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button size="sm" onClick={() => navigate({ to: "/doc/new/$kind", params: { kind: "invoice" } })}>
             <Plus className="size-4" /> New Invoice
