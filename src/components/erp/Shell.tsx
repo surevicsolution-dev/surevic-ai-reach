@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3, Boxes, FileText, Users, ReceiptIndianRupee, Wallet,
   BookOpenCheck, CalendarClock, Settings, Factory, Plus, ShieldCheck, LogOut, Building2, KeyRound,
@@ -66,6 +66,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const { state, user, companies, companyId, switchCompany, signOut } = useErp();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
