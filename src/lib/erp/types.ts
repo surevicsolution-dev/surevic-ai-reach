@@ -1,4 +1,12 @@
-export type Role = "ADMIN" | "SALES" | "ACCOUNTS" | "WAREHOUSE";
+export type Role = "ADMIN" | "SALES" | "ACCOUNTS" | "WAREHOUSE" | "READONLY";
+
+export const ROLE_LABELS: Record<Role, string> = {
+  ADMIN: "Admin",
+  ACCOUNTS: "Accountant",
+  SALES: "Sales",
+  WAREHOUSE: "Warehouse",
+  READONLY: "Read-Only",
+};
 
 export type PartyType = "CUSTOMER" | "SUPPLIER" | "BOTH";
 
@@ -38,6 +46,9 @@ export interface Company {
   fyStartMonth: number;
   industry: string;
   trialEndsAt: string;
+  subscriptionStatus: string;
+  planValidUntil: string;
+  paymentReference: string;
 }
 
 
@@ -85,6 +96,8 @@ export interface DocItem {
   discountPct?: number;
   /** Absolute discount in ₹ (takes precedence over discountPct when set) */
   discountAmt?: number;
+  /** Free-text line description / remark shown under the item name */
+  description?: string;
 }
 
 export interface Doc {

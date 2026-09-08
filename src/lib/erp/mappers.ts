@@ -26,6 +26,9 @@ export const toCompany = (r: any): Company => ({
   fyStartMonth: Number(r.fy_start_month ?? 4),
   industry: r.industry ?? "",
   trialEndsAt: r.trial_ends_at ?? "",
+  subscriptionStatus: r.subscription_status ?? "trial",
+  planValidUntil: r.plan_valid_until ?? "",
+  paymentReference: r.payment_reference ?? "",
 });
 
 export const fromCompany = (c: Partial<Company>): any => {
