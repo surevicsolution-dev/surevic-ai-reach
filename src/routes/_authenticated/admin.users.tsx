@@ -173,11 +173,14 @@ function AdminUsers() {
                     <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                     <SelectContent>{ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                   </Select>
+                  {u.userId === null ? (
+                    <p className="text-[11px] text-muted-foreground">Invited — awaiting sign-up</p>
+                  ) : (
                   <div className="flex flex-wrap gap-1.5">
                     <Button size="sm" variant="outline" onClick={() => act(() => sendReset({ data: { email: u.email, redirectTo: `${window.location.origin}/reset-password` } }), "Reset email sent")}>
                       <Mail className="size-3.5" /> Reset email
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => { setPwUser({ userId: u.userId, email: u.email }); setPw(""); }}>
+                    <Button size="sm" variant="outline" onClick={() => { setPwUser({ userId: u.userId!, email: u.email }); setPw(""); }}>
                       <KeyRound className="size-3.5" /> Set password
                     </Button>
                     <Button
@@ -185,7 +188,7 @@ function AdminUsers() {
                       variant="outline"
                       onClick={() => {
                         const email = window.prompt("New email for this user", u.email);
-                        if (email && email !== u.email) void act(() => setAccount({ data: { userId: u.userId, email } }), "Email updated");
+                        if (email && email !== u.email) void act(() => setAccount({ data: { userId: u.userId!, email } }), "Email updated");
                       }}
                     >
                       Change email
@@ -193,11 +196,12 @@ function AdminUsers() {
                     <Button
                       size="sm"
                       variant={u.banned ? "default" : "outline"}
-                      onClick={() => act(() => setAccount({ data: { userId: u.userId, banned: !u.banned } }), u.banned ? "User activated" : "User deactivated")}
+                      onClick={() => act(() => setAccount({ data: { userId: u.userId!, banned: !u.banned } }), u.banned ? "User activated" : "User deactivated")}
                     >
                       {u.banned ? "Activate" : "Deactivate"}
                     </Button>
                   </div>
+                  )}
                 </div>
               ))}
             </div>
