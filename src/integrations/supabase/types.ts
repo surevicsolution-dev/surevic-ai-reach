@@ -79,10 +79,14 @@ export type Database = {
           license_valid_until: string | null
           name: string
           pan: string
+          payment_reference: string
           phone: string
+          plan_valid_until: string | null
           quote_prefix: string
           state: string
           state_code: string
+          subscription_status: string
+          subscription_submitted_at: string | null
           terms: string[]
           trial_ends_at: string
           upi_id: string
@@ -108,10 +112,14 @@ export type Database = {
           license_valid_until?: string | null
           name: string
           pan?: string
+          payment_reference?: string
           phone?: string
+          plan_valid_until?: string | null
           quote_prefix?: string
           state?: string
           state_code?: string
+          subscription_status?: string
+          subscription_submitted_at?: string | null
           terms?: string[]
           trial_ends_at?: string
           upi_id?: string
@@ -137,10 +145,14 @@ export type Database = {
           license_valid_until?: string | null
           name?: string
           pan?: string
+          payment_reference?: string
           phone?: string
+          plan_valid_until?: string | null
           quote_prefix?: string
           state?: string
           state_code?: string
+          subscription_status?: string
+          subscription_submitted_at?: string | null
           terms?: string[]
           trial_ends_at?: string
           upi_id?: string
@@ -152,23 +164,29 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string
+          email: string
           id: string
+          invited_by: string | null
           role: Database["public"]["Enums"]["app_role"]
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           company_id: string
           created_at?: string
+          email?: string
           id?: string
+          invited_by?: string | null
           role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string
+          email?: string
           id?: string
+          invited_by?: string | null
           role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -469,10 +487,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_invites: { Args: never; Returns: number }
     }
     Enums: {
-      app_role: "ADMIN" | "SALES" | "ACCOUNTS" | "WAREHOUSE"
+      app_role: "ADMIN" | "SALES" | "ACCOUNTS" | "WAREHOUSE" | "READONLY"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -600,7 +618,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["ADMIN", "SALES", "ACCOUNTS", "WAREHOUSE"],
+      app_role: ["ADMIN", "SALES", "ACCOUNTS", "WAREHOUSE", "READONLY"],
     },
   },
 } as const
